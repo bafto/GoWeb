@@ -18,31 +18,42 @@ var server http.Server           //the server itself which uses the handler serv
 
 var templates *template.Template //html templates for all files that need to be served
 
+func errorJson(w http.ResponseWriter, msg string, code int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(`{"error":"` + msg + `"}`)
+}
+
+func returnJson(w http.ResponseWriter, JSON string, code int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(JSON)
+}
+
 type Food struct {
 	Name string
 }
 
-func editJson(data []string) {
+func editFoodList(data Food) error {
 	file, err := ioutil.ReadFile("static/foods.json")
 	if err != nil {
-		log.Println("Error reading foods.json: " + err.Error())
+		return err
 	}
 	var Foods []Food
 	err = json.Unmarshal(file, &Foods)
 	if err != nil {
-		log.Println("Error unmarshaling the file: " + err.Error())
+		return err
 	}
-	for _, v := range data {
-		Foods = append(Foods, Food{Name: v})
-	}
+	Foods = append(Foods, data)
 	newFile, err := json.MarshalIndent(Foods, "", "\t")
 	if err != nil {
-		log.Println("Error marshaling the new json: " + err.Error())
+		return err
 	}
 	err = ioutil.WriteFile("static/foods.json", newFile, 0644)
 	if err != nil {
-		log.Println("Error writing json to file: " + err.Error())
+		return err
 	}
+	return nil
 }
 
 func loadTemplates() {
@@ -51,11 +62,43 @@ func loadTemplates() {
 
 //serving the root page (every request on "/" that is not handled specifically)
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received some request on /")
 	loadTemplates()
 	err := templates.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		log.Fatal("Error executing the index template: " + err.Error())
+	}
+}
+
+func editFoodHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received some request on /api/editFood")
+	switch r.Method {
+	case http.MethodPost:
+		log.Println("request on /api/editFood was of type POST")
+		if r.Header.Get("Content-Type") != "application/json" {
+			log.Println("Request does not contain json")
+			errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
+			return
+		}
+		var food Food
+		err := json.NewDecoder(r.Body).Decode(&food)
+		if err != nil {
+			log.Println("Error unmarshaling requests json body: " + err.Error())
+			errorJson(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		err = editFoodList(food)
+		if err != nil {
+			log.Println("Error editing Food List: " + err.Error())
+			errorJson(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		returnJson(w, `{"success":"success"}`, http.StatusOK)
+	case http.MethodDelete:
+
+	default:
+		log.Println("Method type \"" + r.Method + "\" not handled")
 	}
 }
 
@@ -71,6 +114,7 @@ func main() {
 	serverHandler.Handle("/static/", http.StripPrefix("/static/", staticHandler))
 	//setup the handler functions of the serverHandler
 	serverHandler.HandleFunc("/", indexHandler)
+	serverHandler.HandleFunc("/api/editFood", editFoodHandler)
 
 	//start the goroutine that handles some commands mainly for debugging but also to shutdown the server
 	log.Println("Starting cmd goroutine")
@@ -119,7 +163,10 @@ func cmdInterface() {
 				if err != nil {
 					log.Println(err.Error())
 				} else {
-					editJson([]string{inp2})
+					err = editFoodList(Food{Name: inp2})
+					if err != nil {
+						log.Println("Error editing Food list: " + err.Error())
+					}
 				}
 			}
 		}

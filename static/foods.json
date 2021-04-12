@@ -1,8 +1,5 @@
 [
 	{
-		"Name": "Pizza"
-	},
-	{
 		"Name": "Kuchen"
 	},
 	{
@@ -13,5 +10,14 @@
 	},
 	{
 		"Name": "Suppe"
+	},
+	{
+		"Name": "Kartoffeln"
+	},
+	{
+		"Name": "Thunfisch"
+	},
+	{
+		"Name": "Nudeln"
 	}
 ]
