@@ -2,14 +2,48 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"sync"
 )
 
-var templates *template.Template
+var wg sync.WaitGroup //to handle waiting on all goroutines
+
+var serverHandler *http.ServeMux //the handler that handles requests
+var server http.Server           //the server itself which uses the handler serverHandler
+
+var templates *template.Template //html templates for all files that need to be served
+
+type Food struct {
+	Name string
+}
+
+func editJson(data []string) {
+	file, err := ioutil.ReadFile("static/foods.json")
+	if err != nil {
+		log.Println("Error reading foods.json: " + err.Error())
+	}
+	var Foods []Food
+	err = json.Unmarshal(file, &Foods)
+	if err != nil {
+		log.Println("Error unmarshaling the file: " + err.Error())
+	}
+	for _, v := range data {
+		Foods = append(Foods, Food{Name: v})
+	}
+	newFile, err := json.MarshalIndent(Foods, "", "\t")
+	if err != nil {
+		log.Println("Error marshaling the new json: " + err.Error())
+	}
+	err = ioutil.WriteFile("static/foods.json", newFile, 0644)
+	if err != nil {
+		log.Println("Error writing json to file: " + err.Error())
+	}
+}
 
 func loadTemplates() {
 	templates = template.Must(template.ParseFiles("index.html"))
@@ -24,11 +58,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error executing the index template: " + err.Error())
 	}
 }
-
-var wg sync.WaitGroup //to handle waiting on all goroutines
-
-var serverHandler *http.ServeMux //the handler that handles requests
-var server http.Server           //the server itself which uses the handler serverHandler
 
 func main() {
 	//load the templates (in production only here)
@@ -83,6 +112,15 @@ func cmdInterface() {
 				loop = false
 			case "update-templates":
 				loadTemplates() //only use to debug, as changing the templates variable is not properly synchronized between goroutines
+			case "add":
+				fmt.Print("Food Name to add: ")
+				var inp2 string
+				_, err := fmt.Scanln(&inp2)
+				if err != nil {
+					log.Println(err.Error())
+				} else {
+					editJson([]string{inp2})
+				}
 			}
 		}
 	}

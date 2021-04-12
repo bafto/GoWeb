@@ -1,6 +1,17 @@
 [
-    "Kuchen",
-    "Pizza",
-    "Torte",
-    "Tee"
+	{
+		"Name": "Pizza"
+	},
+	{
+		"Name": "Kuchen"
+	},
+	{
+		"Name": "Torte"
+	},
+	{
+		"Name": "Lachs"
+	},
+	{
+		"Name": "Suppe"
+	}
 ]

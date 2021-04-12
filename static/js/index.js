@@ -10,23 +10,26 @@ submit.addEventListener("click", () => {
     foodList.appendChild(listItem)
     listItem.querySelector("button").addEventListener("click", async (e) => {
         e.target.parentElement.remove()
-        food = await getAllFood()
-        console.log(food[0])
     })
 })
 
-const buttons = foodList.querySelectorAll("button")
-
-buttons.forEach((btn) => {
-    btn.addEventListener('click', async (e) => {
-        e.target.parentElement.remove()
-        food = await getAllFood()
-        console.log(food[0])
-    })
-})
 
 async function getAllFood() {
     let resp = await fetch("/static/foods.json")
     let json = await resp.json()
     return json
 }
+
+async function setup() {
+    let food = await getAllFood()
+    food.forEach((e) => {
+        const listItem = document.createElement("div")
+        listItem.classList.add("listItem")
+        listItem.innerHTML = `<p>${e.Name}</p><button>close</button>`
+        foodList.appendChild(listItem)
+        listItem.querySelector("button").addEventListener("click", (e) => {
+            e.target.parentElement.remove()
+        })
+    })
+}
+setup()
