@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -40,7 +41,26 @@ type Food struct {
 	Name string
 }
 
+func checkFileExist(file string) (*bool, error) {
+	var b bool
+	if _, err := os.Stat(file); err == nil {
+		b = true
+		return &b, nil
+	} else if os.IsNotExist(err) {
+		b = false
+		return &b, nil
+	} else {
+		return nil, err
+	}
+}
+
 func editFoodList(data Food) error {
+	if b, err := checkFileExist("static/foods.json"); err != nil {
+		log.Println("File static/foods.json may or may not exist: " + err.Error())
+	} else if *b == false {
+		os.Create("static/foods.json")
+		ioutil.WriteFile("static/foods.json", []byte("[]"), 0644)
+	}
 	file, err := ioutil.ReadFile("static/foods.json")
 	if err != nil {
 		return err
@@ -148,6 +168,12 @@ func getFoodHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
 		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
+	}
+	if b, err := checkFileExist("static/foods.json"); err != nil {
+		log.Println("File static/foods.json may or may not exist: " + err.Error())
+	} else if *b == false {
+		os.Create("static/foods.json")
+		ioutil.WriteFile("static/foods.json", []byte("[]"), 0644)
 	}
 	file, err := ioutil.ReadFile("static/foods.json")
 	if err != nil {
