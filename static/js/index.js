@@ -2,7 +2,7 @@ const input = document.getElementById("formInput")
 const submit = document.getElementById("submit")
 const foodList = document.getElementById("foodList")
 
-submit.addEventListener("click", async () => {
+async function addFood() {
     let foodName = input.value;
     let resp = await fetch("/api/editFood", {
         method: 'POST',
@@ -28,6 +28,16 @@ submit.addEventListener("click", async () => {
                 e.target.parentElement.remove()
             }
         })
+        input.value = ''
+    }
+}
+
+submit.addEventListener("click", async () => {
+    addFood()
+})
+input.addEventListener("keyup", async (e) => {
+    if (e.key === 'Enter') {
+        addFood()
     }
 })
 
