@@ -98,3 +98,17 @@ body>h1 {
 #form>button:focus {
     outline: none;
 }
+
+@media screen and (max-device-width: 480px) {
+    #form>button {
+        width: 65%;
+    }
+
+    #form>input {
+        width: 80%;
+    }
+
+    #content {
+        width: 80%;
+    }
+}

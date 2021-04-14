@@ -4,31 +4,34 @@ const foodList = document.getElementById("foodList")
 
 async function addFood() {
     let foodName = input.value;
-    let resp = await fetch("/api/editFood", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({Name: foodName})
-    })
-    if (resp.status == 200) {
-        const listItem = document.createElement("div")
-        listItem.classList.add("listItem")
-        listItem.innerHTML = `<p>${foodName}</p><button>close</button>`
-        foodList.appendChild(listItem)
-        listItem.querySelector("button").addEventListener("click", async (e) => {
-            let response = await fetch("/api/editFood", {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({Name: foodName})
-            })
-            if (response.status == 200) {
-                e.target.parentElement.remove()
-            }
+    if(foodName.length != 0)
+    {
+        let resp = await fetch("/api/editFood", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({Name: foodName})
         })
-        input.value = ''
+        if (resp.status == 200) {
+            const listItem = document.createElement("div")
+            listItem.classList.add("listItem")
+            listItem.innerHTML = `<p>${foodName}</p><button>close</button>`
+            foodList.appendChild(listItem)
+            listItem.querySelector("button").addEventListener("click", async (e) => {
+                let response = await fetch("/api/editFood", {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({Name: foodName})
+                })
+                if (response.status == 200) {
+                    e.target.parentElement.remove()
+                }
+            })
+            input.value = ''
+    }
     }
 }
 
