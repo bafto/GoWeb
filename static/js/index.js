@@ -11,8 +11,14 @@ async function addFood() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Name: foodName})
+            body: JSON.stringify({
+                ID: '',
+                Name: foodName,
+                Label: []
+            })
         })
+        let respJson = await resp.json()
+        console.log(respJson.ID)
         if (resp.status == 200) {
             const listItem = document.createElement("div")
             listItem.classList.add("listItem")
@@ -24,7 +30,11 @@ async function addFood() {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({Name: foodName})
+                    body: JSON.stringify({
+                        ID: respJson.ID,
+                        Name: respJson.Name,
+                        Label: respJson.Label
+                    })
                 })
                 if (response.status == 200) {
                     e.target.parentElement.remove()
@@ -37,10 +47,12 @@ async function addFood() {
 
 submit.addEventListener("click", async () => {
     addFood()
+    console.log("added Food")
 })
 input.addEventListener("keyup", async (e) => {
     if (e.key === 'Enter') {
         addFood()
+        console.log("added Food")
     }
 })
 
@@ -64,7 +76,11 @@ async function setup() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({Name: el.Name})
+                body: JSON.stringify({
+                    ID: el.ID,
+                    Name: el.Name,
+                    Label: el.Label
+                })
             })
             if (response.status == 200) {
                 e.target.parentElement.remove()
