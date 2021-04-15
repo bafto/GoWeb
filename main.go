@@ -65,6 +65,7 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var food Food
 	err := json.NewDecoder(r.Body).Decode(&food)
+	log.Println(food.ID)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
 		errorJson(w, err.Error(), http.StatusBadRequest)
@@ -73,13 +74,17 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		log.Println("request on /api/editFood was of type POST")
+		food = *NewFood(food)
+		if food.Label == nil {
+			food.Label = make([]string, 0)
+		}
 		err = AddFoodToList(food)
 		if err != nil {
 			log.Println("Error editing Food List: " + err.Error())
 			errorJson(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		returnJson(w, `{"success":true}`, http.StatusOK)
+		returnJsonFromStruct(w, food, http.StatusOK)
 	case http.MethodDelete:
 		log.Println("request on /api/editFood was of type DELETE")
 		err = DeleteFoodFromList(food)
@@ -92,6 +97,7 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
 	}
+	log.Println(food)
 }
 
 //responds with a json array containing foods.json
