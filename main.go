@@ -44,7 +44,7 @@ type Food struct {
 	Name string
 }
 
-func checkFileExist(file string) (*bool, error) {
+func CheckFileExist(file string) (*bool, error) {
 	var b bool
 	if _, err := os.Stat(file); err == nil {
 		b = true
@@ -58,10 +58,10 @@ func checkFileExist(file string) (*bool, error) {
 }
 
 //add data to foods.json
-func editFoodList(data Food) error {
-	if b, err := checkFileExist("static/foods.json"); err != nil {
+func AddFoodToList(data Food) error {
+	if b, err := CheckFileExist("static/foods.json"); err != nil {
 		log.Println("File static/foods.json may or may not exist: " + err.Error())
-	} else if *b == false {
+	} else if !*b {
 		os.Create("static/foods.json")
 		ioutil.WriteFile("static/foods.json", []byte("[]"), 0644)
 	}
@@ -87,7 +87,7 @@ func editFoodList(data Food) error {
 }
 
 //remove data from foods.json
-func deleteFoodFromList(data Food) error {
+func DeleteFoodFromList(data Food) error {
 	file, err := ioutil.ReadFile("static/foods.json")
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		log.Println("request on /api/editFood was of type POST")
-		err = editFoodList(food)
+		err = AddFoodToList(food)
 		if err != nil {
 			log.Println("Error editing Food List: " + err.Error())
 			errorJson(w, err.Error(), http.StatusInternalServerError)
@@ -156,7 +156,7 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 		returnJson(w, `{"success":true}`, http.StatusOK)
 	case http.MethodDelete:
 		log.Println("request on /api/editFood was of type DELETE")
-		err = deleteFoodFromList(food)
+		err = DeleteFoodFromList(food)
 		if err != nil {
 			log.Println("Error deleting from Food List: " + err.Error())
 			errorJson(w, err.Error(), http.StatusInternalServerError)
@@ -176,9 +176,9 @@ func getFoodHandler(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
 	}
-	if b, err := checkFileExist("static/foods.json"); err != nil {
+	if b, err := CheckFileExist("static/foods.json"); err != nil {
 		log.Println("File static/foods.json may or may not exist: " + err.Error())
-	} else if *b == false {
+	} else if !*b {
 		os.Create("static/foods.json")
 		ioutil.WriteFile("static/foods.json", []byte("[]"), 0644)
 	}
@@ -206,7 +206,7 @@ func main() {
 	serverHandler = http.NewServeMux()
 	server = http.Server{Addr: ":8080", Handler: serverHandler}
 
-	staticHandler := http.FileServer(http.Dir("static")) //static handler to serve .js and .css files from the static directory
+	staticHandler := http.FileServer(http.Dir("static")) //static handler to serve files from the static directory
 	serverHandler.Handle("/static/", http.StripPrefix("/static/", staticHandler))
 	//setup the handler functions of the serverHandler
 	serverHandler.HandleFunc("/", indexHandler)
@@ -215,8 +215,8 @@ func main() {
 
 	//start the goroutine that handles some commands mainly for debugging but also to shutdown the server
 	log.Println("Starting cmd goroutine")
+	wg.Add(1)
 	go func() {
-		wg.Add(1)
 		defer wg.Done() //tell the waiter group that we are finished at the end
 		cmdInterface()
 		log.Println("cmd goroutine finished")
@@ -260,7 +260,7 @@ func cmdInterface() {
 				if err != nil {
 					log.Println(err.Error())
 				} else {
-					err = editFoodList(Food{Name: inp2})
+					err = AddFoodToList(Food{Name: inp2})
 					if err != nil {
 						log.Println("Error editing Food list: " + err.Error())
 					}
