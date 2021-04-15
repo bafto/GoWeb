@@ -19,18 +19,21 @@ var server http.Server           //the server itself which uses the handler serv
 
 var templates *template.Template //html templates for all files that need to be served
 
+//write an json error to w
 func errorJson(w http.ResponseWriter, msg string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(`{"error":"` + msg + `"}`)
 }
 
+//send a response with json body over w
 func returnJson(w http.ResponseWriter, JSON string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(JSON)
 }
 
+//send a response with a json body constructed from data over w
 func returnJsonFromStruct(w http.ResponseWriter, data interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
@@ -54,6 +57,7 @@ func checkFileExist(file string) (*bool, error) {
 	}
 }
 
+//add data to foods.json
 func editFoodList(data Food) error {
 	if b, err := checkFileExist("static/foods.json"); err != nil {
 		log.Println("File static/foods.json may or may not exist: " + err.Error())
@@ -82,6 +86,7 @@ func editFoodList(data Food) error {
 	return nil
 }
 
+//remove data from foods.json
 func deleteFoodFromList(data Food) error {
 	file, err := ioutil.ReadFile("static/foods.json")
 	if err != nil {
@@ -124,6 +129,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//handles POST and DELETE methods on /api/editFoods to work on the foods.json file
 func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/editFood")
 	if r.Header.Get("Content-Type") != "application/json" {
@@ -162,6 +168,7 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//responds with a json array containing foods.json
 func getFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getFood")
 	if r.Method != http.MethodGet {
