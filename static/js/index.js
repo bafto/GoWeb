@@ -14,15 +14,27 @@ async function addFood() {
             body: JSON.stringify({
                 ID: '',
                 Name: foodName,
-                Label: []
+                Label: [
+                    'Label1',
+                    'Label2',
+                    'Label3'
+                ]
             })
         })
         let respJson = await resp.json()
-        console.log(respJson.ID)
         if (resp.status == 200) {
             const listItem = document.createElement("div")
             listItem.classList.add("listItem")
-            listItem.innerHTML = `<p>${foodName}</p><button>close</button>`
+            listItem.innerHTML = `
+            <div class="listItemHeader">
+            <p>${respJson.Name}</p><button>close</button>
+            </div>
+            <div class="labelList"></div>
+            `
+            let labelList = listItem.querySelector(".labelList")
+            respJson.Label.forEach((e) => {
+                labelList.innerHTML = labelList.innerHTML + `<p>${e}</p>`
+            })
             foodList.appendChild(listItem)
             listItem.querySelector("button").addEventListener("click", async (e) => {
                 let response = await fetch("/api/editFood", {
@@ -37,7 +49,7 @@ async function addFood() {
                     })
                 })
                 if (response.status == 200) {
-                    e.target.parentElement.remove()
+                    e.target.parentElement.parentElement.remove()
                 }
             })
             input.value = ''
@@ -47,12 +59,10 @@ async function addFood() {
 
 submit.addEventListener("click", async () => {
     addFood()
-    console.log("added Food")
 })
 input.addEventListener("keyup", async (e) => {
     if (e.key === 'Enter') {
         addFood()
-        console.log("added Food")
     }
 })
 
@@ -63,14 +73,21 @@ async function getAllFood() {
 
 async function setup() {
     let food = await getAllFood()
-    console.log(food)
     food.forEach((el) => {
         const listItem = document.createElement("div")
-        listItem.classList.add("listItem")
-        listItem.innerHTML = `<p>${el.Name}</p><button>close</button>`
+            listItem.classList.add("listItem")
+            listItem.innerHTML = `
+            <div class="listItemHeader">
+            <p>${el.Name}</p><button>close</button>
+            </div>
+            <div class="labelList"></div>
+            `
+            let labelList = listItem.querySelector(".labelList")
+            el.Label.forEach((e) => {
+                labelList.innerHTML = labelList.innerHTML + `<p>${e}</p>`
+            })
         foodList.appendChild(listItem)
         listItem.querySelector("button").addEventListener("click", async (e) => {
-            e.target.parentElement.remove()
             let response = await fetch("/api/editFood", {
                 method: 'DELETE',
                 headers: {
@@ -83,7 +100,7 @@ async function setup() {
                 })
             })
             if (response.status == 200) {
-                e.target.parentElement.remove()
+                e.target.parentElement.parentElement.remove()
             }
         })
     })

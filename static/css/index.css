@@ -15,10 +15,10 @@ body>h1 {
 }
 
 .listItem {
-    width: 100%;
+    /*width: 100%;
     display: grid;
     grid-template-columns: 1fr auto;
-    justify-items: center;
+    justify-items: center;*/
     background-color: transparent;
     transition: background-color 0.7s ease;
     border-radius: 5px;
@@ -29,19 +29,26 @@ body>h1 {
     transition: background-color 0.7s ease;
 }
 
-.listItem>p {
+.listItemHeader {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    justify-items: center;
+}
+
+.listItemHeader>p {
     width: 100%;
     float: left;
 }
 
-.listItem>button {
+.listItemHeader>button {
     border-radius: 7px;
     border-color: transparent;
     background-color: transparent;
     transition: background-color 0.3s ease;
 }
 
-.listItem>button:hover {
+.listItemHeader>button:hover {
     background-color: rgb(191, 191, 191);
     transition: background-color 0.3s ease;
 }
