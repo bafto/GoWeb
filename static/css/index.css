@@ -15,13 +15,11 @@ body>h1 {
 }
 
 .listItem {
-    /*width: 100%;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    justify-items: center;*/
-    background-color: transparent;
+    background-color: rgb(240, 240, 240);
     transition: background-color 0.7s ease;
     border-radius: 5px;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .listItem:hover {
@@ -32,25 +30,83 @@ body>h1 {
 .listItemHeader {
     width: 100%;
     display: grid;
+    background-color: rgb(230, 230, 230);
+    border: none;
+    border-radius: 5px;
     grid-template-columns: 1fr auto;
-    justify-items: center;
+    transition: background-color 0.5s ease;
+}
+
+.listItemHeader:hover {
+    background-color: rgb(191, 191, 191);
+}
+
+.listItemHeader:focus {
+    outline: none;
 }
 
 .listItemHeader>p {
     width: 100%;
-    float: left;
+    text-align: left;
 }
 
-.listItemHeader>button {
-    border-radius: 7px;
+.listItemHeader:active {
+    background-color: rgb(211, 211, 211);
+}
+
+.arrow {
+    margin-top: auto;
+    margin-bottom: auto;
+    display: block;
+    height: 1.5rem;
+    transition: transform 0.5s ease;
+}
+
+.rotated90 {
+    transform: rotate(90deg);
+    transition: transform 0.5s ease;
+}
+
+.pathColored {
+    fill: rgb(100, 100, 100);
+}
+
+.listItemContent {
+    max-height: 300px;
+    overflow: visible;
+    padding: 0.5rem;
+    transition: max-height 0.5s ease, padding 0.5s;
+}
+
+.collapsed {
+    max-height: 0px;
+    overflow: hidden;
+    padding: 0;
+    transition: max-height 0.5s ease, padding 0.5s;
+}
+
+.removeBtn {
+    height: 2rem;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 25px;
     border-color: transparent;
-    background-color: transparent;
+    background-color: rgb(201, 201, 201);
     transition: background-color 0.3s ease;
 }
 
-.listItemHeader>button:hover {
+.removeBtn:hover {
     background-color: rgb(191, 191, 191);
     transition: background-color 0.3s ease;
+}
+
+.removeBtn:active {
+    background-color: rgb(211, 211, 211);
+}
+
+.removeBtn:focus {
+    outline: none;
 }
 
 #form {
