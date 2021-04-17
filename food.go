@@ -71,6 +71,33 @@ func AddFoodToList(data Food) error {
 	return nil
 }
 
+func ChangeFoodInList(data Food) error {
+	file, err := ioutil.ReadFile("static/foods.json")
+	if err != nil {
+		return err
+	}
+	var Foods []Food
+	err = json.Unmarshal(file, &Foods)
+	if err != nil {
+		return err
+	}
+	for i, v := range Foods {
+		if v.ID == data.ID {
+			Foods[i] = data
+			break
+		}
+	}
+	newFile, err := json.MarshalIndent(Foods, "", "\t")
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile("static/foods.json", newFile, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 //remove data from foods.json
 func DeleteFoodFromList(data Food) error {
 	file, err := ioutil.ReadFile("static/foods.json")

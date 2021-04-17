@@ -65,12 +65,12 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var food Food
 	err := json.NewDecoder(r.Body).Decode(&food)
-	log.Println(food.ID)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
 		errorJson(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	log.Println(food.ID)
 	switch r.Method {
 	case http.MethodPost:
 		log.Println("request on /api/editFood was of type POST")
@@ -96,8 +96,39 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 		returnJson(w, `{"success":true}`, http.StatusOK)
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
+		errorJson(w, "false Method type", http.StatusBadRequest)
 	}
 	log.Println(food)
+}
+
+func changeFoodHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /api/changeFood")
+	if r.Header.Get("Content-Type") != "application/json" {
+		log.Println("Request does not contain json")
+		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
+		return
+	}
+	var food Food
+	err := json.NewDecoder(r.Body).Decode(&food)
+	if err != nil {
+		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errorJson(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	log.Println(food)
+	switch r.Method {
+	case http.MethodPost:
+		err = ChangeFoodInList(food)
+		if err != nil {
+			log.Println("Error changing food list: " + err.Error())
+			errorJson(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		returnJsonFromStruct(w, food, http.StatusOK)
+	default:
+		log.Println("Method type \"" + r.Method + "\" not handled")
+		errorJson(w, "false Method type", http.StatusBadRequest)
+	}
 }
 
 //responds with a json array containing foods.json
@@ -144,6 +175,7 @@ func main() {
 	serverHandler.HandleFunc("/", indexHandler)
 	serverHandler.HandleFunc("/api/editFood", editFoodHandler)
 	serverHandler.HandleFunc("/api/getFood", getFoodHandler)
+	serverHandler.HandleFunc("/api/changeFood", changeFoodHandler)
 
 	//start the goroutine that handles some commands mainly for debugging but also to shutdown the server
 	log.Println("Starting cmd goroutine")

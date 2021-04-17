@@ -50,7 +50,7 @@ async function addFood() {
                 labelList.innerHTML = labelList.innerHTML + `
                 <div class="Label">
                     <label class="checkLabel">
-                        <input type="checkbox">
+                        <input type="checkbox" class="labelInput" value="${key}">
                         ${key}
                     </label>
                 </div>
@@ -89,10 +89,32 @@ async function addFood() {
                     e.target.parentElement.parentElement.remove()
                 }
             })
+            listItem.querySelector(".saveChanges").addEventListener("click", async () => {
+                let Label = {}
+                listItem.querySelectorAll(".labelInput").forEach((e) => {
+                    Label[e.value] = e.checked
+                })
+    
+                let response = await fetch("/api/changeFood", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ID: respJson.ID,
+                        Name: respJson.Name,
+                        Label: Label
+                    })
+                })
+                if (response.status != 200) {
+                    console.log('Error saving changes. Add a revert feature')
+                }
+            })
             input.value = ''
     }
     }
 }
+
 
 submit.addEventListener("click", async () => {
     addFood()
@@ -139,7 +161,7 @@ async function setup() {
                 labelList.innerHTML = labelList.innerHTML + `
                 <div class="Label">
                     <label class="checkLabel">
-                        <input type="checkbox">
+                        <input type="checkbox" class="labelInput" value="${key}">
                         ${key}
                     </label>
                 </div>
@@ -182,6 +204,27 @@ async function setup() {
             })
             if (response.status == 200) {
                 e.target.parentElement.parentElement.remove()
+            }
+        })
+        listItem.querySelector(".saveChanges").addEventListener("click", async () => {
+            let Label = {}
+            listItem.querySelectorAll(".labelInput").forEach((e) => {
+                Label[e.value] = e.checked
+            })
+
+            let response = await fetch("/api/changeFood", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ID: el.ID,
+                    Name: el.Name,
+                    Label: Label
+                })
+            })
+            if (response.status != 200) {
+                console.log('Error saving changes. Add a revert feature')
             }
         })
     })
