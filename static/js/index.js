@@ -4,7 +4,7 @@ const foodList = document.getElementById("foodList")
 
 async function addFood() {
     let foodName = input.value;
-    if(foodName.length != 0)
+    if (foodName.length != 0)
     {
         let resp = await fetch("/api/editFood", {
             method: 'POST',
@@ -14,11 +14,11 @@ async function addFood() {
             body: JSON.stringify({
                 ID: '',
                 Name: foodName,
-                Label: [
-                    'Label1',
-                    'Label2',
-                    'Label3'
-                ]
+                Label: {
+                    'Label1': false,
+                    'Label2': false,
+                    'Label3': false
+                }
             })
         })
         let respJson = await resp.json()
@@ -46,28 +46,28 @@ async function addFood() {
             </div>
             `
             let labelList = listItem.querySelector(".labelList")
-            respJson.Label.forEach((e) => {
+            for (let key of Object.keys(respJson.Label)) {
                 labelList.innerHTML = labelList.innerHTML + `
-                <div class="Labels">
+                <div class="Label">
                     <label class="checkLabel">
-                        <input type="checkbox" name="${e}">
-                        ${e}
+                        <input type="checkbox">
+                        ${key}
                     </label>
                 </div>
                 `
-            })
+            }
             foodList.appendChild(listItem)
             listItem.querySelector(".listItemContent").classList.add("collapsed")
             listItem.querySelector(".listItemHeader").addEventListener("click", () => {
                 let content = listItem.querySelector(".listItemContent")
-                if(content.classList.contains("collapsed")) {
+                if (content.classList.contains("collapsed")) {
                     content.classList.remove("collapsed")
                 } else {
                     content.classList.add("collapsed")
                 }
 
                 let svg = listItem.querySelector("svg")
-                if(svg.classList.contains("rotated90")) {
+                if (svg.classList.contains("rotated90")) {
                     svg.classList.remove("rotated90")
                 } else {
                     svg.classList.add("rotated90")
@@ -110,6 +110,7 @@ async function getAllFood() {
 
 async function setup() {
     let food = await getAllFood()
+    console.log(food)
     food.forEach((el) => {
         const listItem = document.createElement("div")
             listItem.classList.add("listItem")
@@ -134,28 +135,34 @@ async function setup() {
             </div>
             `
             let labelList = listItem.querySelector(".labelList")
-            el.Label.forEach((e) => {
+            for (let key of Object.keys(el.Label)) {
                 labelList.innerHTML = labelList.innerHTML + `
-                <div class="Labels">
+                <div class="Label">
                     <label class="checkLabel">
-                        <input type="checkbox" name="${e}">
-                        ${e}
+                        <input type="checkbox">
+                        ${key}
                     </label>
                 </div>
                 `
-            })
+            }
+            let divs = labelList.querySelectorAll('.Label')
+            let i = 0
+            for (let key of Object.keys(el.Label)) {
+                divs[i].querySelector('input').checked = el.Label[key]
+                i++
+            }
         foodList.appendChild(listItem)
         listItem.querySelector(".listItemContent").classList.add("collapsed")
         listItem.querySelector(".listItemHeader").addEventListener("click", () => {
             let content = listItem.querySelector(".listItemContent")
-            if(content.classList.contains("collapsed")) {
+            if (content.classList.contains("collapsed")) {
                 content.classList.remove("collapsed")
             } else {
                 content.classList.add("collapsed")
             }
-            
+
             let svg = listItem.querySelector("svg")
-            if(svg.classList.contains("rotated90")) {
+            if (svg.classList.contains("rotated90")) {
                 svg.classList.remove("rotated90")
             } else {
                 svg.classList.add("rotated90")

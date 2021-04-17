@@ -76,7 +76,7 @@ func editFoodHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("request on /api/editFood was of type POST")
 		food = *NewFood(food)
 		if food.Label == nil {
-			food.Label = make([]string, 0)
+			food.Label = make(map[string]bool)
 		}
 		err = AddFoodToList(food)
 		if err != nil {
