@@ -78,11 +78,24 @@ body>h1 {
     transition: max-height 0.5s ease, padding 0.5s;
 }
 
+.listItemContent>button {
+    visibility: visible;
+    transition: visibility 0s 0.2s;
+}
+
 .collapsed {
     max-height: 0px;
     overflow: hidden;
     padding: 0;
     transition: max-height 0.5s ease, padding 0.5s;
+}
+
+.collapsed>button {
+    visibility: hidden;
+}
+
+.Labels {
+    margin-bottom: 2%;
 }
 
 .removeBtn {
@@ -106,6 +119,31 @@ body>h1 {
 }
 
 .removeBtn:focus {
+    outline: none;
+}
+
+.saveChanges {
+    height: 2rem;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 25px;
+    border-color: transparent;
+    background-color: rgb(201, 201, 201);
+    margin-bottom: .5rem;
+    transition: background-color 0.3s ease;
+}
+
+.saveChanges:hover {
+    background-color: rgb(191, 191, 191);
+    transition: background-color 0.3s ease;
+}
+
+.saveChanges:active {
+    background-color: rgb(211, 211, 211);
+}
+
+.saveChanges:focus {
     outline: none;
 }
 

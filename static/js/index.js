@@ -40,32 +40,36 @@ async function addFood() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
+                <button class="saveChanges">save changes</button>
+                <br>
                 <button class="removeBtn">remove</button>
             </div>
             `
             let labelList = listItem.querySelector(".labelList")
             respJson.Label.forEach((e) => {
-                labelList.innerHTML = labelList.innerHTML + `<p>${e}</p>`
+                labelList.innerHTML = labelList.innerHTML + `
+                <div class="Labels">
+                    <label class="checkLabel">
+                        <input type="checkbox" name="${e}">
+                        ${e}
+                    </label>
+                </div>
+                `
             })
             foodList.appendChild(listItem)
             listItem.querySelector(".listItemContent").classList.add("collapsed")
             listItem.querySelector(".listItemHeader").addEventListener("click", () => {
                 let content = listItem.querySelector(".listItemContent")
-                if(content.classList.contains("collapsed")) 
-                {
+                if(content.classList.contains("collapsed")) {
                     content.classList.remove("collapsed")
-                }
-                else
-                {
+                } else {
                     content.classList.add("collapsed")
                 }
+
                 let svg = listItem.querySelector("svg")
-                if(svg.classList.contains("rotated90"))
-                {
+                if(svg.classList.contains("rotated90")) {
                     svg.classList.remove("rotated90")
-                }
-                else
-                {
+                } else {
                     svg.classList.add("rotated90")
                 }
             })
@@ -124,32 +128,36 @@ async function setup() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
+                <button class="saveChanges">save changes</button>
+                <br>
                 <button class="removeBtn">remove</button>
             </div>
             `
             let labelList = listItem.querySelector(".labelList")
             el.Label.forEach((e) => {
-                labelList.innerHTML = labelList.innerHTML + `<p>${e}</p>`
+                labelList.innerHTML = labelList.innerHTML + `
+                <div class="Labels">
+                    <label class="checkLabel">
+                        <input type="checkbox" name="${e}">
+                        ${e}
+                    </label>
+                </div>
+                `
             })
         foodList.appendChild(listItem)
         listItem.querySelector(".listItemContent").classList.add("collapsed")
         listItem.querySelector(".listItemHeader").addEventListener("click", () => {
             let content = listItem.querySelector(".listItemContent")
-            if(content.classList.contains("collapsed")) 
-            {
+            if(content.classList.contains("collapsed")) {
                 content.classList.remove("collapsed")
-            }
-            else
-            {
+            } else {
                 content.classList.add("collapsed")
             }
+            
             let svg = listItem.querySelector("svg")
-            if(svg.classList.contains("rotated90"))
-            {
+            if(svg.classList.contains("rotated90")) {
                 svg.classList.remove("rotated90")
-            }
-            else
-            {
+            } else {
                 svg.classList.add("rotated90")
             }
         })
