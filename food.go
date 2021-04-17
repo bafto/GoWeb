@@ -44,13 +44,13 @@ func CheckFileExist(file string) (*bool, error) {
 
 //add data to foods.json
 func AddFoodToList(data Food) error {
-	if b, err := CheckFileExist("static/foods.json"); err != nil {
-		log.Println("File static/foods.json may or may not exist: " + err.Error())
+	if b, err := CheckFileExist("resources/foods.json"); err != nil {
+		log.Println("File resources/foods.json may or may not exist: " + err.Error())
 	} else if !*b {
-		os.Create("static/foods.json")
-		ioutil.WriteFile("static/foods.json", []byte("[]"), 0644)
+		os.Create("resources/foods.json")
+		ioutil.WriteFile("resources/foods.json", []byte("[]"), 0644)
 	}
-	file, err := ioutil.ReadFile("static/foods.json")
+	file, err := ioutil.ReadFile("resources/foods.json")
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func AddFoodToList(data Food) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile("static/foods.json", newFile, 0644)
+	err = ioutil.WriteFile("resources/foods.json", newFile, 0644)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func AddFoodToList(data Food) error {
 }
 
 func ChangeFoodInList(data Food) error {
-	file, err := ioutil.ReadFile("static/foods.json")
+	file, err := ioutil.ReadFile("resources/foods.json")
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func ChangeFoodInList(data Food) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile("static/foods.json", newFile, 0644)
+	err = ioutil.WriteFile("resources/foods.json", newFile, 0644)
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func ChangeFoodInList(data Food) error {
 
 //remove data from foods.json
 func DeleteFoodFromList(data Food) error {
-	file, err := ioutil.ReadFile("static/foods.json")
+	file, err := ioutil.ReadFile("resources/foods.json")
 	if err != nil {
 		return err
 	}
@@ -119,9 +119,28 @@ func DeleteFoodFromList(data Food) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile("static/foods.json", newFile, 0644)
+	err = ioutil.WriteFile("resources/foods.json", newFile, 0644)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func GetWholeFoodList() ([]Food, error) {
+	if b, err := CheckFileExist("resources/foods.json"); err != nil {
+		log.Println("File resources/foods.json may or may not exist: " + err.Error())
+	} else if !*b {
+		os.Create("resources/foods.json")
+		ioutil.WriteFile("resources/foods.json", []byte("[]"), 0644)
+	}
+	file, err := ioutil.ReadFile("resources/foods.json")
+	if err != nil {
+		return nil, err
+	}
+	var Foods []Food
+	err = json.Unmarshal(file, &Foods)
+	if err != nil {
+		return nil, err
+	}
+	return Foods, nil
 }

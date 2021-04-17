@@ -2,10 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 //write an json error to w
@@ -112,24 +110,10 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
 	}
-	if b, err := CheckFileExist("static/foods.json"); err != nil {
-		log.Println("File static/foods.json may or may not exist: " + err.Error())
-	} else if !*b {
-		os.Create("static/foods.json")
-		ioutil.WriteFile("static/foods.json", []byte("[]"), 0644)
-	}
-	file, err := ioutil.ReadFile("static/foods.json")
+	Foods, err := GetWholeFoodList()
 	if err != nil {
-		log.Println("Error reading static/foods.json: " + err.Error())
+		log.Println("Error retreiving whole food list: " + err.Error())
 		errorJson(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	var Foods []Food
-	err = json.Unmarshal(file, &Foods)
-	if err != nil {
-		log.Println("Error unmarshaling static/foods.json: " + err.Error())
-		errorJson(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
 	returnJsonFromStruct(w, Foods, http.StatusOK)
 }
