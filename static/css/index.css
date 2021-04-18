@@ -122,31 +122,6 @@ body>h1 {
     outline: none;
 }
 
-.saveChanges {
-    height: 2rem;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
-    border-radius: 25px;
-    border-color: transparent;
-    background-color: rgb(201, 201, 201);
-    margin-bottom: .5rem;
-    transition: background-color 0.3s ease;
-}
-
-.saveChanges:hover {
-    background-color: rgb(191, 191, 191);
-    transition: background-color 0.3s ease;
-}
-
-.saveChanges:active {
-    background-color: rgb(211, 211, 211);
-}
-
-.saveChanges:focus {
-    outline: none;
-}
-
 #form {
     display: flex;
     flex-direction: column;

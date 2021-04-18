@@ -42,8 +42,6 @@ async function addFood() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
-                <button class="saveChanges">save changes</button>
-                <br>
                 <button class="removeBtn">remove</button>
             </div>
             `
@@ -91,26 +89,28 @@ async function addFood() {
                     e.target.parentElement.parentElement.remove()
                 }
             })
-            listItem.querySelector(".saveChanges").addEventListener("click", async () => {
-                let Label = {}
-                listItem.querySelectorAll(".labelInput").forEach((e) => {
-                    Label[e.value] = e.checked
-                })
-    
-                let response = await fetch("/api/changeFood", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ID: respJson.ID,
-                        Name: respJson.Name,
-                        Label: Label
+            listItem.querySelectorAll(".labelInput").forEach((el) => {
+                el.addEventListener("change", async () => {
+                    let Label = {}
+                    listItem.querySelectorAll(".labelInput").forEach((e) => {
+                        Label[e.value] = e.checked
                     })
+        
+                    let response = await fetch("/api/changeFood", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ID: respJson.ID,
+                            Name: respJson.Name,
+                            Label: Label
+                        })
+                    })
+                    if (response.status != 200) {
+                        console.log('Error saving changes. Add a revert feature')
+                    }
                 })
-                if (response.status != 200) {
-                    console.log('Error saving changes. Add a revert feature')
-                }
             })
             foodInput.value = ''
     }
@@ -196,8 +196,6 @@ async function setup() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
-                <button class="saveChanges">save changes</button>
-                <br>
                 <button class="removeBtn">remove</button>
             </div>
             `
@@ -251,26 +249,28 @@ async function setup() {
                 e.target.parentElement.parentElement.remove()
             }
         })
-        listItem.querySelector(".saveChanges").addEventListener("click", async () => {
-            let Label = {}
-            listItem.querySelectorAll(".labelInput").forEach((e) => {
-                Label[e.value] = e.checked
-            })
-
-            let response = await fetch("/api/changeFood", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    ID: el.ID,
-                    Name: el.Name,
-                    Label: Label
+        listItem.querySelectorAll(".labelInput").forEach((element) => {
+            element.addEventListener("change", async () => {
+                let Label = {}
+                listItem.querySelectorAll(".labelInput").forEach((e) => {
+                    Label[e.value] = e.checked
                 })
+    
+                let response = await fetch("/api/changeFood", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ID: el.ID,
+                        Name: el.Name,
+                        Label: Label
+                    })
+                })
+                if (response.status != 200) {
+                    console.log('Error saving changes. Add a revert feature')
+                }
             })
-            if (response.status != 200) {
-                console.log('Error saving changes. Add a revert feature')
-            }
         })
     })
 }
