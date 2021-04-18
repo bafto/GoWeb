@@ -137,9 +137,13 @@ async function addLabel() {
             body: JSON.stringify(labelName)
         })
         if (resp.status == 200) {
-            let labelList = foodList.querySelectorAll(".labelList")
-            labelList.forEach((e, i) => {
-                labelList[i].innerHTML = labelList[i].innerHTML + `
+            let labelLists = foodList.querySelectorAll(".labelList")
+            labelLists.forEach((e, i) => {
+                let label = {}
+                labelLists[i].querySelectorAll('.labelInput').forEach((e) => {
+                    label[e.value] = e.checked
+                })
+                labelLists[i].innerHTML = labelLists[i].innerHTML + `
                 <div class="Label">
                     <label class="checkLabel">
                         <input type="checkbox" class="labelInput" value="${labelName}">
@@ -147,6 +151,10 @@ async function addLabel() {
                     </label>
                 </div>
                 `
+                let labelInputs = labelLists[i].querySelectorAll('.labelInput')
+                    labelInputs.forEach((e) => {
+                        e.checked = label[e.value]
+                    })
             })
         }
     }
