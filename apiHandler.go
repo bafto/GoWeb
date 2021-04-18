@@ -50,6 +50,14 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		if food.Label == nil {
 			food.Label = make(map[string]bool)
 		}
+		LabelList, err := GetWholeLabelList()
+		if err != nil {
+			log.Println("Error retreiving label list: " + err.Error())
+			errorJson(w, err.Error(), http.StatusInternalServerError)
+		}
+		for _, v := range LabelList {
+			food.Label[v] = false
+		}
 		err = AddFoodToList(food)
 		if err != nil {
 			log.Println("Error editing Food List: " + err.Error())
@@ -117,6 +125,21 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, err.Error(), http.StatusInternalServerError)
 	}
 	returnJsonFromStruct(w, Foods, http.StatusOK)
+}
+
+func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /api/getLabel")
+	if r.Method != http.MethodGet {
+		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
+		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		return
+	}
+	label, err := GetWholeLabelList()
+	if err != nil {
+		log.Println("error receiving label list: " + err.Error())
+		errorJson(w, err.Error(), http.StatusInternalServerError)
+	}
+	returnJsonFromStruct(w, label, http.StatusOK)
 }
 
 func AddLabelHandler(w http.ResponseWriter, r *http.Request) {
