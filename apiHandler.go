@@ -117,3 +117,25 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	returnJsonFromStruct(w, Foods, http.StatusOK)
 }
+
+func AddLabelHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /api/addLabel")
+	if r.Method != http.MethodPost {
+		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
+		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		return
+	}
+	var Label string
+	err := json.NewDecoder(r.Body).Decode(&Label)
+	if err != nil {
+		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errorJson(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = AddLabelToList(Label)
+	if err != nil {
+		log.Println("Error adding label to list: " + err.Error())
+		errorJson(w, err.Error(), http.StatusInternalServerError)
+	}
+	returnJson(w, `{"success":true}`, http.StatusOK)
+}

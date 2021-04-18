@@ -1,9 +1,11 @@
-const input = document.getElementById("formInput")
-const submit = document.getElementById("submit")
+const foodInput = document.getElementById("addFoodInput")
+const foodSubmit = document.getElementById("addFoodSubmit")
+const labelInput = document.getElementById("addLabelInput")
+const labelSubmit = document.getElementById("addLabelSubmit")
 const foodList = document.getElementById("foodList")
 
 async function addFood() {
-    let foodName = input.value;
+    let foodName = foodInput.value;
     if (foodName.length != 0)
     {
         let resp = await fetch("/api/editFood", {
@@ -110,18 +112,53 @@ async function addFood() {
                     console.log('Error saving changes. Add a revert feature')
                 }
             })
-            input.value = ''
+            foodInput.value = ''
     }
     }
 }
 
-
-submit.addEventListener("click", async () => {
+foodSubmit.addEventListener("click", async () => {
     addFood()
 })
-input.addEventListener("keyup", async (e) => {
+foodInput.addEventListener("keyup", async (e) => {
     if (e.key === 'Enter') {
         addFood()
+    }
+})
+
+async function addLabel() {
+    let labelName = labelInput.value
+    if (labelName.length != 0) {
+        let resp = await fetch("/api/addLabel", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(labelName)
+        })
+        if (resp.status == 200) {
+            let labelList = foodList.querySelectorAll(".labelList")
+            labelList.forEach((e, i) => {
+                labelList[i].innerHTML = labelList[i].innerHTML + `
+                <div class="Label">
+                    <label class="checkLabel">
+                        <input type="checkbox" class="labelInput" value="${labelName}">
+                        ${labelName}
+                    </label>
+                </div>
+                `
+            })
+        }
+    }
+    labelInput.value = ''
+}
+
+labelSubmit.addEventListener("click", async () => {
+    addLabel()
+})
+labelInput.addEventListener("keyup", async (e) => {
+    if (e.key === 'Enter') {
+        addLabel()
     }
 })
 

@@ -144,3 +144,22 @@ func GetWholeFoodList() ([]Food, error) {
 	}
 	return Foods, nil
 }
+
+func AddLabelToList(label string) error {
+	Foods, err := GetWholeFoodList()
+	if err != nil {
+		return err
+	}
+	for i := range Foods {
+		Foods[i].Label[label] = false
+	}
+	newFile, err := json.MarshalIndent(Foods, "", "\t")
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile("resources/foods.json", newFile, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
