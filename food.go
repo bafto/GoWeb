@@ -28,10 +28,8 @@ type Food struct {
 	Label map[string]bool
 }
 
-func NewFood(food Food) *Food { //genearte an ID for a new Food
-	f := food
-	f.ID = time.Now().Format("Mon-Jan-2-15:04:05-2006")
-	return &f
+func GenerateFoodID() string {
+	return time.Now().Format("Mon-Jan-2-15:04:05-2006")
 }
 
 func (f Food) Equals(comp Food) bool { //compare foods by ID
@@ -100,6 +98,7 @@ func GetWholeFoodList() ([]Food, error) {
 	return holder.FoodList, err
 }
 
+//returns a []string containing the label list in foods.json
 func GetWholeLabelList() ([]string, error) {
 	holder, err := GetWholeFile()
 	return holder.LabelList, err

@@ -46,10 +46,11 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost: //add food to the list
 		log.Println("request on /api/editFood was of type POST")
-		food = *NewFood(food)
+		food.ID = GenerateFoodID() //generate the food ID
 		if food.Label == nil {
 			food.Label = make(map[string]bool)
 		}
+		//add all labels to the food
 		LabelList, err := GetWholeLabelList()
 		if err != nil {
 			log.Println("Error retreiving label list: " + err.Error())

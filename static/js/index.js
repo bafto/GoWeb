@@ -9,14 +9,6 @@ async function addFood() {
     let foodName = foodInput.value;
     if (foodName.length != 0)
     {
-        let labelList = await fetch("/api/getLabel", {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        let labels = labelList.json()
-        console.log(labels)
         //Post the new Food to the backend
         let resp = await fetch("/api/editFood", {
             method: 'POST',
