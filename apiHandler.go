@@ -30,11 +30,12 @@ func returnJsonFromStruct(w http.ResponseWriter, data interface{}, code int) {
 //handles POST and DELETE methods on /api/editFoods to work on the foods.json file
 func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/editFood")
-	if r.Header.Get("Content-Type") != "application/json" {
+	if r.Header.Get("Content-Type") != "application/json" { //validate that the request contains json
 		log.Println("Request does not contain json")
 		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
+	//get the food from the request body
 	var food Food
 	err := json.NewDecoder(r.Body).Decode(&food)
 	if err != nil {
@@ -43,7 +44,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch r.Method {
-	case http.MethodPost:
+	case http.MethodPost: //add food to the list
 		log.Println("request on /api/editFood was of type POST")
 		food = *NewFood(food)
 		if food.Label == nil {
@@ -56,7 +57,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		returnJsonFromStruct(w, food, http.StatusOK)
-	case http.MethodDelete:
+	case http.MethodDelete: //delete food from the list
 		log.Println("request on /api/editFood was of type DELETE")
 		err = DeleteFoodFromList(food)
 		if err != nil {
