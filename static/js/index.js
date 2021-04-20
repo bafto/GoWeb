@@ -1,7 +1,5 @@
 const foodInput = document.getElementById("addFoodInput")
 const foodSubmit = document.getElementById("addFoodSubmit")
-const labelInput = document.getElementById("addLabelInput")
-const labelSubmit = document.getElementById("addLabelSubmit")
 const foodList = document.getElementById("foodList")
 
 //called when a food is added
@@ -126,52 +124,6 @@ foodSubmit.addEventListener("click", async () => {
 foodInput.addEventListener("keyup", async (e) => {
     if (e.key === 'Enter') {
         addFood()
-    }
-})
-
-//called when a label is added to the label list
-async function addLabel() {
-    let labelName = labelInput.value
-    if (labelName.length != 0) {
-        let resp = await fetch("/api/editLabel", { //post the new Label to the backend
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(labelName)
-        })
-        if (resp.status == 200) { //on success we add the label to every food in the DOM
-            let labelLists = foodList.querySelectorAll(".labelList")
-            labelLists.forEach((e, i) => {
-                let label = {}
-                labelLists[i].querySelectorAll('.labelInput').forEach((e) => {
-                    label[e.value] = e.checked
-                })
-                labelLists[i].innerHTML = labelLists[i].innerHTML + `
-                <div class="Label">
-                    <label class="checkLabel">
-                        <input type="checkbox" class="labelInput" value="${labelName}">
-                        ${labelName}
-                    </label>
-                </div>
-                `
-                let labelInputs = labelLists[i].querySelectorAll('.labelInput')
-                    labelInputs.forEach((e) => {
-                        e.checked = label[e.value]
-                    })
-            })
-        }
-    }
-    labelInput.value = ''
-}
-
-//add the event listeners to add a label
-labelSubmit.addEventListener("click", async () => {
-    addLabel()
-})
-labelInput.addEventListener("keyup", async (e) => {
-    if (e.key === 'Enter') {
-        addLabel()
     }
 })
 

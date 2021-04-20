@@ -166,7 +166,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error adding label to list: " + err.Error())
 			errorJson(w, err.Error(), http.StatusInternalServerError)
 		}
-		returnJson(w, `{"success":true}`, http.StatusOK)
+		returnJson(w, label, http.StatusOK)
 	case http.MethodDelete: //delete food from the list
 		log.Println("request on /api/editLabel was of type DELETE")
 		err = DeleteLabelFromList(label)
@@ -175,7 +175,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 			errorJson(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		returnJson(w, `{"success":true}`, http.StatusOK)
+		returnJson(w, label, http.StatusOK)
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
 		errorJson(w, "false Method type", http.StatusBadRequest)
