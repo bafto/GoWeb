@@ -86,7 +86,7 @@ async function addFood() {
                     })
                 })
                 if (response.status == 200) { //on success we remove the food from the DOM
-                    let parent = el.target.parentElement
+                    let parent = e.target.parentElement
                     while (!parent.classList.contains('listItem')) {
                         parent = parent.parentElement
                     }
