@@ -35,21 +35,14 @@ body>h1 {
 }
 
 .removeBtn {
-    height: 2rem;
-    left: 50%;
-    border-radius: 25px;
     border-color: transparent;
-    background-color: rgb(191, 191, 191);
-    transition: background-color 0.3s ease;
+    background-color: transparent;
+    border-radius: 5px;
 }
 
 .removeBtn:hover {
-    background-color: rgb(211, 211, 211);
+    background-color: white;
     transition: background-color 0.3s ease;
-}
-
-.removeBtn:active {
-    background-color: rgb(221, 221, 221);
 }
 
 .removeBtn:focus {

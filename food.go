@@ -62,16 +62,6 @@ func writeFoodList(foods []Food) error {
 	return writeJsonHolder(holder) //and write it to the file
 }
 
-//at the moment unused but maybe usefull later
-func writeLabelList(label []string) error {
-	holder, err := GetWholeFile() //get the whole file
-	if err != nil {
-		return err
-	}
-	holder.LabelList = label       //change its food list
-	return writeJsonHolder(holder) //and write it to the file
-}
-
 func GetWholeFile() (JsonHolder, error) {
 	//if foods.json does not exist create it with an empty food and label list
 	if b, err := CheckFileExist("resources/foods.json"); err != nil {

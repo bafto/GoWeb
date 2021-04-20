@@ -40,7 +40,7 @@ async function addFood() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
-                <button class="removeBtn">remove</button>
+                <button class="removeBtn"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
             //add the labels with checkboxes
@@ -86,7 +86,11 @@ async function addFood() {
                     })
                 })
                 if (response.status == 200) { //on success we remove the food from the DOM
-                    e.target.parentElement.parentElement.remove()
+                    let parent = el.target.parentElement
+                    while (!parent.classList.contains('listItem')) {
+                        parent = parent.parentElement
+                    }
+                    parent.remove()
                 }
             })
             listItem.querySelectorAll(".labelInput").forEach((el) => { //if a label state is changed we inform the backend
@@ -156,7 +160,7 @@ async function setup() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
-                <button class="removeBtn">remove</button>
+                <button class="removeBtn"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
             //add the labels to the food
@@ -207,7 +211,11 @@ async function setup() {
                 })
             })
             if (response.status == 200) { //on success we remove the food from the DOM
-                e.target.parentElement.parentElement.remove()
+                let parent = el.target.parentElement
+                while (!parent.classList.contains('listItem')) {
+                    parent = parent.parentElement
+                }
+                parent.remove()
             }
         })
         listItem.querySelectorAll(".labelInput").forEach((element) => { //event listener when a label is changed

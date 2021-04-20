@@ -17,7 +17,7 @@ async function addLabel() {
             listItem.classList.add('listItem')
             listItem.innerHTML = `
                 <p>${labelName}</p>
-                <button class="removeBtn">remove</button>
+                <button class="removeBtn"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
                 `
             labelList.appendChild(listItem)
             listItem.querySelector('.removeBtn').addEventListener("click", async (el) => {
@@ -29,7 +29,11 @@ async function addLabel() {
                 body: JSON.stringify(labelName)
             })
             if (resp.status == 200) {
-                el.target.parentElement.remove()
+                let parent = el.target.parentElement
+                while (!parent.classList.contains('listItem')) {
+                    parent = parent.parentElement
+                }
+                parent.remove()
             }
         })
         }
@@ -58,7 +62,7 @@ async function setup() {
         listItem.classList.add('listItem')
         listItem.innerHTML = `
             <p>${e}</p>
-            <button class="removeBtn">remove</button>
+            <button class="removeBtn"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
         `
         labelList.appendChild(listItem)
         listItem.querySelector('.removeBtn').addEventListener("click", async (el) => {
@@ -70,7 +74,11 @@ async function setup() {
                 body: JSON.stringify(e)
             })
             if (resp.status == 200) {
-                el.target.parentElement.remove()
+                let parent = el.target.parentElement
+                while (!parent.classList.contains('listItem')) {
+                    parent = parent.parentElement
+                }
+                parent.remove()
             }
         })
     })
