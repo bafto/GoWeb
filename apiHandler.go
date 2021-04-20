@@ -143,24 +143,41 @@ func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
 	returnJsonFromStruct(w, label, http.StatusOK)
 }
 
-func AddLabelHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/addLabel")
-	if r.Method != http.MethodPost {
-		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
-		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /api/editLabel")
+	if r.Header.Get("Content-Type") != "application/json" { //validate that the request contains json
+		log.Println("Request does not contain json")
+		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
-	var Label string
-	err := json.NewDecoder(r.Body).Decode(&Label)
+	//get the food from the request body
+	var label string
+	err := json.NewDecoder(r.Body).Decode(&label)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
 		errorJson(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = AddLabelToList(Label)
-	if err != nil {
-		log.Println("Error adding label to list: " + err.Error())
-		errorJson(w, err.Error(), http.StatusInternalServerError)
+	switch r.Method {
+	case http.MethodPost: //add food to the list
+		log.Println("request on /api/editLabel was of type POST")
+		err = AddLabelToList(label)
+		if err != nil {
+			log.Println("Error adding label to list: " + err.Error())
+			errorJson(w, err.Error(), http.StatusInternalServerError)
+		}
+		returnJson(w, `{"success":true}`, http.StatusOK)
+	case http.MethodDelete: //delete food from the list
+		log.Println("request on /api/editLabel was of type DELETE")
+		err = DeleteLabelFromList(label)
+		if err != nil {
+			log.Println("Error deleting from labelList: " + err.Error())
+			errorJson(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		returnJson(w, `{"success":true}`, http.StatusOK)
+	default:
+		log.Println("Method type \"" + r.Method + "\" not handled")
+		errorJson(w, "false Method type", http.StatusBadRequest)
 	}
-	returnJson(w, `{"success":true}`, http.StatusOK)
 }

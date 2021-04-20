@@ -133,7 +133,7 @@ foodInput.addEventListener("keyup", async (e) => {
 async function addLabel() {
     let labelName = labelInput.value
     if (labelName.length != 0) {
-        let resp = await fetch("/api/addLabel", { //post the new Label to the backend
+        let resp = await fetch("/api/editLabel", { //post the new Label to the backend
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

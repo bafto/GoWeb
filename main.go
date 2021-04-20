@@ -17,7 +17,7 @@ var server http.Server           //the server itself which uses the handler serv
 var templates *template.Template //html templates for all files that need to be served
 
 func loadTemplates() {
-	templates = template.Must(template.ParseFiles("index.html"))
+	templates = template.Must(template.ParseFiles("html/index.html", "html/labelList.html"))
 }
 
 //serving the root page (every request on "/" that is not handled specifically)
@@ -27,7 +27,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	err := templates.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
-		log.Fatal("Error executing the index template: " + err.Error())
+		log.Println("Error executing the index template: " + err.Error())
+	}
+}
+
+func labelListHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /labelList")
+	loadTemplates()
+	err := templates.ExecuteTemplate(w, "labelList.html", nil)
+	if err != nil {
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		log.Println("Error executing the labelList template: " + err.Error())
 	}
 }
 
@@ -43,11 +53,12 @@ func main() {
 	serverHandler.Handle("/static/", http.StripPrefix("/static/", staticHandler))
 	//setup the handler functions of the serverHandler
 	serverHandler.HandleFunc("/", indexHandler)
+	serverHandler.HandleFunc("/labelList", labelListHandler)
 	serverHandler.HandleFunc("/api/editFood", EditFoodHandler)
 	serverHandler.HandleFunc("/api/getFood", GetFoodHandler)
 	serverHandler.HandleFunc("/api/changeFood", ChangeFoodHandler)
-	serverHandler.HandleFunc("/api/addLabel", AddLabelHandler)
 	serverHandler.HandleFunc("/api/getLabel", GetLabelHandler)
+	serverHandler.HandleFunc("/api/editLabel", EditLabelHandler)
 
 	//start the goroutine that handles some commands mainly for debugging but also to shutdown the server
 	log.Println("Starting cmd goroutine")

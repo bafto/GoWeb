@@ -156,3 +156,21 @@ func AddLabelToList(label string) error {
 	}
 	return writeJsonHolder(holder)
 }
+
+func DeleteLabelFromList(data string) error {
+	holder, err := GetWholeFile()
+	if err != nil {
+		return err
+	}
+	Label := holder.LabelList
+	holder.LabelList = make([]string, 0, cap(Label)) //write every food to the new list that is not equal to the food that we want to delete
+	for _, v := range Label {
+		if v != data {
+			holder.LabelList = append(holder.LabelList, v)
+		}
+	}
+	for i := range holder.FoodList {
+		delete(holder.FoodList[i].Label, data)
+	}
+	return writeJsonHolder(holder)
+}

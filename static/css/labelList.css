@@ -1,0 +1,118 @@
+body>h1 {
+    text-align: center;
+}
+
+#content {
+    position: absolute;
+    width: 40%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+#labelList {
+    display: flex;
+    flex-direction: column;
+}
+
+.listItem {
+    max-height: 300px;
+    overflow: visible;
+    padding: 0.5rem;
+    transition: max-height 0.5s ease, padding 0.5s;
+}
+
+.listItem>button {
+    visibility: visible;
+    transition: visibility 0s 0.2s;
+}
+
+.removeBtn {
+    height: 2rem;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border-radius: 25px;
+    border-color: transparent;
+    background-color: rgb(201, 201, 201);
+    transition: background-color 0.3s ease;
+}
+
+.removeBtn:hover {
+    background-color: rgb(191, 191, 191);
+    transition: background-color 0.3s ease;
+}
+
+.removeBtn:active {
+    background-color: rgb(211, 211, 211);
+}
+
+.removeBtn:focus {
+    outline: none;
+}
+
+#form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4%;
+}
+
+#form>input {
+    font-size: 20;
+    height: 1.5em;
+    width: 50%;
+    border-radius: 10px;
+    outline: none;
+    border-color: transparent;
+    background-color: rgb(221, 221, 221);
+    transition: background-color 0.4s ease;
+}
+
+#form>input:hover {
+    background-color: rgb(211, 211, 211);
+    transition: background-color 0.4s ease;
+}
+
+#form>input:focus {
+    background-color: rgb(191, 191, 191);
+    border-color: transparent;
+    outline: none;
+}
+
+#form>button {
+    height: 2em;
+    margin-top: 2%;
+    width: 35%;
+    border-radius: 10px;
+    border: none;
+    background-color: rgb(221, 221, 221);
+    transition: background-color 0.3s ease;
+}
+
+#form>button:hover {
+    background-color: rgb(211, 211, 211);
+    transition: background-color 0.3s ease;
+}
+
+#form>button:active {
+    outline: none;
+    background-color: rgb(191, 191, 191);
+}
+
+#form>button:focus {
+    outline: none;
+}
+
+@media screen and (max-device-width: 480px) {
+    #form>button {
+        width: 65%;
+    }
+
+    #form>input {
+        width: 80%;
+    }
+
+    #content {
+        width: 80%;
+    }
+}
