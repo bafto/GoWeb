@@ -50,16 +50,15 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		if food.Label == nil {
 			food.Label = make(map[string]bool)
 		}
-		//add all labels to the food
 		LabelList, err := GetWholeLabelList()
 		if err != nil {
 			log.Println("Error retreiving label list: " + err.Error())
 			errorJson(w, err.Error(), http.StatusInternalServerError)
 		}
-		for _, v := range LabelList {
+		for _, v := range LabelList { //add all labels to the food
 			food.Label[v] = false
 		}
-		err = AddFoodToList(food)
+		err = AddFoodToList(food) //and add the food to the list
 		if err != nil {
 			log.Println("Error editing Food List: " + err.Error())
 			errorJson(w, err.Error(), http.StatusInternalServerError)
@@ -84,13 +83,13 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 //handles POST requests on /api/changeFood to save changes on a single food like adding Labels
 func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/changeFood")
-	if r.Header.Get("Content-Type") != "application/json" {
+	if r.Header.Get("Content-Type") != "application/json" { //check if the request contains json
 		log.Println("Request does not contain json")
 		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
 	var food Food
-	err := json.NewDecoder(r.Body).Decode(&food)
+	err := json.NewDecoder(r.Body).Decode(&food) //retreive the food
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
 		errorJson(w, err.Error(), http.StatusBadRequest)

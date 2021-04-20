@@ -54,22 +54,22 @@ func writeJsonHolder(holder JsonHolder) error {
 }
 
 func writeFoodList(foods []Food) error {
-	holder, err := GetWholeFile()
+	holder, err := GetWholeFile() //get the whole file
 	if err != nil {
 		return err
 	}
-	holder.FoodList = foods
-	return writeJsonHolder(holder)
+	holder.FoodList = foods        //change its food list
+	return writeJsonHolder(holder) //and write it to the file
 }
 
 //at the moment unused but maybe usefull later
 func writeLabelList(label []string) error {
-	holder, err := GetWholeFile()
+	holder, err := GetWholeFile() //get the whole file
 	if err != nil {
 		return err
 	}
-	holder.LabelList = label
-	return writeJsonHolder(holder)
+	holder.LabelList = label       //change its food list
+	return writeJsonHolder(holder) //and write it to the file
 }
 
 func GetWholeFile() (JsonHolder, error) {
@@ -110,7 +110,7 @@ func AddFoodToList(data Food) error {
 	if err != nil {
 		return err
 	}
-	Foods = append(Foods, data) //append the new Food to the list
+	Foods = append(Foods, data)
 	return writeFoodList(Foods)
 }
 
@@ -163,13 +163,13 @@ func DeleteLabelFromList(data string) error {
 		return err
 	}
 	Label := holder.LabelList
-	holder.LabelList = make([]string, 0, cap(Label)) //write every food to the new list that is not equal to the food that we want to delete
-	for _, v := range Label {
+	holder.LabelList = make([]string, 0, cap(Label))
+	for _, v := range Label { //write every label to the new list that is not equal to the food that we want to delete
 		if v != data {
 			holder.LabelList = append(holder.LabelList, v)
 		}
 	}
-	for i := range holder.FoodList {
+	for i := range holder.FoodList { //delete the label from every food in the list
 		delete(holder.FoodList[i].Label, data)
 	}
 	return writeJsonHolder(holder)

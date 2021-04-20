@@ -31,6 +31,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//serving the labelList page
 func labelListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /labelList")
 	loadTemplates()
@@ -51,9 +52,10 @@ func main() {
 
 	staticHandler := http.FileServer(http.Dir("static")) //static handler to serve files from the static directory
 	serverHandler.Handle("/static/", http.StripPrefix("/static/", staticHandler))
-	//setup the handler functions of the serverHandler
+	//setup the html page handler functions
 	serverHandler.HandleFunc("/", indexHandler)
 	serverHandler.HandleFunc("/labelList", labelListHandler)
+	//setup the handler functions defined in apiHandler.go
 	serverHandler.HandleFunc("/api/editFood", EditFoodHandler)
 	serverHandler.HandleFunc("/api/getFood", GetFoodHandler)
 	serverHandler.HandleFunc("/api/changeFood", ChangeFoodHandler)
