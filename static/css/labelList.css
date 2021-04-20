@@ -16,34 +16,40 @@ body>h1 {
 
 .listItem {
     max-height: 300px;
-    overflow: visible;
-    padding: 0.5rem;
-    transition: max-height 0.5s ease, padding 0.5s;
+    display: grid;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    background-color: rgb(230, 230, 230);
+    border: none;
+    border-radius: 5px;
+    grid-template-columns: 1fr auto;
+    transition: background-color 0.5s ease;
+    margin-bottom: 2%;
+    margin-top: 2%;
+    align-items: center;
 }
 
-.listItem>button {
-    visibility: visible;
-    transition: visibility 0s 0.2s;
+.listItem:hover {
+    background-color: rgb(201, 201, 201);
+    transition: background-color 0.5s ease;
 }
 
 .removeBtn {
     height: 2rem;
-    position: relative;
     left: 50%;
-    transform: translate(-50%, 0);
     border-radius: 25px;
     border-color: transparent;
-    background-color: rgb(201, 201, 201);
-    transition: background-color 0.3s ease;
-}
-
-.removeBtn:hover {
     background-color: rgb(191, 191, 191);
     transition: background-color 0.3s ease;
 }
 
-.removeBtn:active {
+.removeBtn:hover {
     background-color: rgb(211, 211, 211);
+    transition: background-color 0.3s ease;
+}
+
+.removeBtn:active {
+    background-color: rgb(221, 221, 221);
 }
 
 .removeBtn:focus {
