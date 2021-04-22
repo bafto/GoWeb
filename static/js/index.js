@@ -16,7 +16,7 @@ async function addFood() {
             body: JSON.stringify({
                 ID: '',
                 Name: foodName,
-                Label: {}
+                Label: []
             })
         })
         let respJson = await resp.json()
@@ -40,21 +40,45 @@ async function addFood() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
-                <button class="removeBtn"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
+                <button class="removeBtn foodRemove"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
-            //add the labels with checkboxes
+            currentLabel = respJson.Label //holds the label state for the food
             let labelList = listItem.querySelector(".labelList")
-            for (let key of Object.keys(respJson.Label)) {
+            respJson.Label.forEach((e) => { //add each label to the food
                 labelList.innerHTML = labelList.innerHTML + `
                 <div class="Label">
-                    <label class="checkLabel">
-                        <input type="checkbox" class="labelInput" value="${key}">
-                        ${key}
-                    </label>
+                    <p>${e}</p>
+                    <button class="removeBtn labelRemove"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
                 </div>
                 `
-            }
+                listItem.querySelectorAll(".labelRemove").forEach( async (e) => {
+                    e.addEventListener("click", async (t) => {
+                        //remove the label from the label state
+                        let i = currentLabel.indexOf(e)
+                        if (i != -1) {
+                            currentLabel.splice(i, 1)
+                        }
+                        //send the POST request to remove the label in the backend
+                        let response = await fetch("api/changeFood", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ID: el.ID,
+                                Name: el.Name,
+                                Label: currentLabel
+                            })
+                        })
+                        //on success remove the label from the food in the DOM
+                        if (response.status == 200) {
+                            e.parentElement.remove()
+                        }
+                    })
+                })
+            })
+            //make the listItem expandable
             foodList.appendChild(listItem)
             listItem.querySelector(".listItemContent").classList.add("collapsed") //by default the new food is collapsed
             listItem.querySelector(".listItemHeader").addEventListener("click", () => { //the event listener to open and close the accordion
@@ -72,7 +96,7 @@ async function addFood() {
                     svg.classList.add("rotated90")
                 }
             })
-            listItem.querySelector(".removeBtn").addEventListener("click", async (e) => { //the event listener to remove the food
+            listItem.querySelector(".foodRemove").addEventListener("click", async (e) => { //the event listener to remove the food
                 //Delete the food from the backend
                 let response = await fetch("/api/editFood", { 
                     method: 'DELETE',
@@ -92,29 +116,6 @@ async function addFood() {
                     }
                     parent.remove()
                 }
-            })
-            listItem.querySelectorAll(".labelInput").forEach((el) => { //if a label state is changed we inform the backend
-                el.addEventListener("change", async () => {
-                    let Label = {}
-                    listItem.querySelectorAll(".labelInput").forEach((e) => {
-                        Label[e.value] = e.checked
-                    })
-        
-                    let response = await fetch("/api/changeFood", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            ID: respJson.ID,
-                            Name: respJson.Name,
-                            Label: Label
-                        })
-                    })
-                    if (response.status != 200) {
-                        console.log('Error saving changes. Add a revert feature')
-                    }
-                })
             })
             foodInput.value = ''
     }
@@ -160,27 +161,45 @@ async function setup() {
             </button>
             <div class="listItemContent">
                 <div class="labelList"></div>
-                <button class="removeBtn"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
+                <button class="removeBtn foodRemove"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
-            //add the labels to the food
+            currentLabel = el.Label //holds the label state for the food
             let labelList = listItem.querySelector(".labelList")
-            for (let key of Object.keys(el.Label)) {
+            el.Label.forEach((e) => { //add each label to the food
                 labelList.innerHTML = labelList.innerHTML + `
                 <div class="Label">
-                    <label class="checkLabel">
-                        <input type="checkbox" class="labelInput" value="${key}">
-                        ${key}
-                    </label>
+                    <p>${e}</p>
+                    <button class="removeBtn labelRemove"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
                 </div>
                 `
-            }
-            let divs = labelList.querySelectorAll('.Label')
-            let i = 0
-            for (let key of Object.keys(el.Label)) {
-                divs[i].querySelector('input').checked = el.Label[key]
-                i++
-            }
+                listItem.querySelectorAll(".labelRemove").forEach( async (e) => {
+                    e.addEventListener("click", async (t) => {
+                        //remove the label from the label state
+                        let i = currentLabel.indexOf(e)
+                        if (i != -1) {
+                            currentLabel.splice(i, 1)
+                        }
+                        //send the POST request to remove the label in the backend
+                        let response = await fetch("api/changeFood", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ID: el.ID,
+                                Name: el.Name,
+                                Label: currentLabel
+                            })
+                        })
+                        //on success remove the label from the food in the DOM
+                        if (response.status == 200) {
+                            e.parentElement.remove()
+                        }
+                    })
+                })
+            })
+        //make the listItem expandable
         foodList.appendChild(listItem)
         listItem.querySelector(".listItemContent").classList.add("collapsed") //by default everything is collapsed
         listItem.querySelector(".listItemHeader").addEventListener("click", () => {
@@ -198,7 +217,7 @@ async function setup() {
                 svg.classList.add("rotated90")
             }
         })
-        listItem.querySelector(".removeBtn").addEventListener("click", async (e) => { //event listener to remove the food
+        listItem.querySelector(".foodRemove").addEventListener("click", async (e) => { //event listener to remove the food
             let response = await fetch("/api/editFood", { //we inform the backend
                 method: 'DELETE',
                 headers: {
@@ -211,34 +230,12 @@ async function setup() {
                 })
             })
             if (response.status == 200) { //on success we remove the food from the DOM
-                let parent = el.target.parentElement
+                let parent = e.target.parentElement
                 while (!parent.classList.contains('listItem')) {
                     parent = parent.parentElement
                 }
                 parent.remove()
             }
-        })
-        listItem.querySelectorAll(".labelInput").forEach((element) => { //event listener when a label is changed
-            element.addEventListener("change", async () => {
-                let Label = {}
-                listItem.querySelectorAll(".labelInput").forEach((e) => {
-                    Label[e.value] = e.checked
-                })
-                let response = await fetch("/api/changeFood", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        ID: el.ID,
-                        Name: el.Name,
-                        Label: Label
-                    })
-                })
-                if (response.status != 200) {
-                    console.log('Error saving changes. Add a revert feature')
-                }
-            })
         })
     })
 }

@@ -95,6 +95,8 @@ body>h1 {
 }
 
 .Label {
+    display: grid;
+    grid-template-columns: 1fr auto;
     margin-bottom: 2%;
 }
 
