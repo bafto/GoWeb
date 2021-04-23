@@ -3,7 +3,8 @@ body>h1 {
 }
 
 #content {
-    position: absolute;
+    position: relative;
+    margin-bottom: 5rem;
     width: 40%;
     left: 50%;
     transform: translate(-50%, 0%);
@@ -72,10 +73,11 @@ body>h1 {
 }
 
 .listItemContent {
-    max-height: 300px;
+    max-height: 800px;
     overflow: visible;
     padding: 0.5rem;
     transition: max-height 0.5s ease, padding 0.5s;
+    align-items: center;
 }
 
 .listItemContent>button {
@@ -96,8 +98,17 @@ body>h1 {
 
 .Label {
     display: grid;
+    padding-left: 0.5rem;
+    border-radius: 5px;
     grid-template-columns: 1fr auto;
     margin-bottom: 2%;
+    background-color: transparent;
+    transition: background-color 0.5s ease;
+}
+
+.Label:hover {
+    background-color: rgb(230, 230, 230);
+    transition: background-color 0.5s ease;
 }
 
 .removeBtn {
@@ -118,14 +129,7 @@ body>h1 {
     outline: none;
 }
 
-#form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 4%;
-}
-
-#form>input {
+input {
     font-size: 20;
     height: 1.5em;
     width: 50%;
@@ -136,18 +140,39 @@ body>h1 {
     transition: background-color 0.4s ease;
 }
 
-#form>input:hover {
+input:hover {
     background-color: rgb(211, 211, 211);
     transition: background-color 0.4s ease;
 }
 
-#form>input:focus {
+input:focus {
     background-color: rgb(191, 191, 191);
     border-color: transparent;
     outline: none;
 }
 
-#form>button {
+.addLabelDiv {
+    text-align: center;
+}
+
+.addLabelInput {
+    position: relative;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.addLabelInput:hover {
+    background-color: rgb(221, 221, 221);
+}
+
+#form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4%;
+}
+
+.styledButton {
     height: 2em;
     margin-top: 2%;
     width: 35%;
@@ -157,17 +182,17 @@ body>h1 {
     transition: background-color 0.3s ease;
 }
 
-#form>button:hover {
+.styledButton:hover {
     background-color: rgb(211, 211, 211);
     transition: background-color 0.3s ease;
 }
 
-#form>button:active {
+.styledButton:active {
     outline: none;
     background-color: rgb(191, 191, 191);
 }
 
-#form>button:focus {
+.styledButton:focus {
     outline: none;
 }
 

@@ -155,18 +155,22 @@ func DeleteLabelFromList(data string) error {
 		return err
 	}
 	Label := holder.LabelList
-	holder.LabelList = make([]string, 0, cap(Label))
-	for _, v := range Label { //write every label to the new list that is not equal to the food that we want to delete
+	holder.LabelList = make([]string, 0, len(Label))
+	for _, v := range Label { //write every label to the new list that is not equal to the label that we want to delete
 		if v != data {
 			holder.LabelList = append(holder.LabelList, v)
 		}
 	}
-	newFoodList := make([]Food, len(holder.FoodList))
 	for i := range holder.FoodList { //delete the label from every food in the list
 		if holder.FoodList[i].HasLabel(data) {
-			newFoodList = append(newFoodList, holder.FoodList[i])
+			var newLabel []string
+			for _, v := range holder.FoodList[i].Label {
+				if v != data {
+					newLabel = append(newLabel, v)
+				}
+			}
+			holder.FoodList[i].Label = newLabel
 		}
 	}
-	holder.FoodList = newFoodList
 	return writeJsonHolder(holder)
 }

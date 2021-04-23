@@ -39,6 +39,10 @@ async function addFood() {
                 </svg>
             </button>
             <div class="listItemContent">
+                <div class="addLabelDiv">
+                    <h3>Add a Label</h3>
+                    <input class="addLabelInput" type="text">
+                </div>
                 <div class="labelList"></div>
                 <button class="removeBtn foodRemove"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
@@ -160,43 +164,44 @@ async function setup() {
                 </svg>
             </button>
             <div class="listItemContent">
+                <div class="addLabelDiv">
+                    <h3>Add a Label</h3>
+                    <input class="addLabelInput" type="text">
+                </div>
                 <div class="labelList"></div>
                 <button class="removeBtn foodRemove"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
-            currentLabel = el.Label //holds the label state for the food
+            let currentLabel = el.Label //holds the label state for the food
             let labelList = listItem.querySelector(".labelList")
             el.Label.forEach((e) => { //add each label to the food
                 labelList.innerHTML = labelList.innerHTML + `
                 <div class="Label">
                     <p>${e}</p>
-                    <button class="removeBtn labelRemove"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
+                    <button class="removeBtn labelRemove" value="${e}"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
                 </div>
                 `
-                listItem.querySelectorAll(".labelRemove").forEach( async (e) => {
-                    e.addEventListener("click", async (t) => {
-                        //remove the label from the label state
-                        let i = currentLabel.indexOf(e)
-                        if (i != -1) {
-                            currentLabel.splice(i, 1)
-                        }
-                        //send the POST request to remove the label in the backend
-                        let response = await fetch("api/changeFood", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                ID: el.ID,
-                                Name: el.Name,
-                                Label: currentLabel
-                            })
+            })
+            listItem.querySelectorAll(".labelRemove").forEach( async (ev) => {
+                ev.addEventListener("click", async (t) => {
+                    //remove the label from the label state
+                    currentLabel = currentLabel.filter((el) => {return el !== ev.value})
+                    //send the POST request to remove the label in the backend
+                    let response = await fetch("api/changeFood", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ID: el.ID,
+                            Name: el.Name,
+                            Label: currentLabel
                         })
-                        //on success remove the label from the food in the DOM
-                        if (response.status == 200) {
-                            e.parentElement.remove()
-                        }
                     })
+                    //on success remove the label from the food in the DOM
+                    if (response.status == 200) {
+                        ev.parentElement.remove()
+                    }
                 })
             })
         //make the listItem expandable

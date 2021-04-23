@@ -3,7 +3,8 @@ body>h1 {
 }
 
 #content {
-    position: absolute;
+    position: relative;
+    margin-bottom: 5rem;
     width: 40%;
     left: 50%;
     transform: translate(-50%, 0%);
