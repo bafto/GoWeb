@@ -1,6 +1,7 @@
 const foodInput = document.getElementById("addFoodInput")
 const foodSubmit = document.getElementById("addFoodSubmit")
 const foodList = document.getElementById("foodList")
+let allLabel
 
 //called when a food is added
 async function addFood() {
@@ -40,13 +41,16 @@ async function addFood() {
             </button>
             <div class="listItemContent">
                 <div class="addLabelDiv">
-                    <h3>Add a Label</h3>
-                    <input class="addLabelInput" type="text">
+                    <div class="autocomplete">
+                        <input class="addLabelInput" type="text" name="myLabel" placeholder="Add a Label">
+                    </div>
+                    <button class="addLabelSubmit styledButton">Submit</button>
                 </div>
                 <div class="labelList"></div>
                 <button class="removeBtn foodRemove"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
+            autocomplete(listItem.querySelector(".addLabelInput"), allLabel)
             currentLabel = respJson.Label //holds the label state for the food
             let labelList = listItem.querySelector(".labelList")
             respJson.Label.forEach((e) => { //add each label to the food
@@ -56,13 +60,39 @@ async function addFood() {
                     <button class="removeBtn labelRemove"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
                 </div>
                 `
-                listItem.querySelectorAll(".labelRemove").forEach( async (e) => {
-                    e.addEventListener("click", async (t) => {
+            })
+            listItem.querySelector(".addLabelSubmit").addEventListener("click", async (e) => {
+                let newLabel = listItem.querySelector(".addLabelInput").value
+                let arr = currentLabel
+                if (arr.includes(newLabel)) {
+                    listItem.querySelector(".addLabelInput").value = ''
+                    return
+                }
+                arr.push(newLabel)
+                let resp = await fetch("/api/changeFood", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ID: respJson.ID,
+                        Name: respJson.Name,
+                        Label: arr
+                    })
+                })
+                if (resp.status == 200) {
+                    currentLabel.push(newLabel)
+                    listItem.querySelector(".addLabelInput").value = ''
+                    let div = document.createElement('div')
+                    div.classList.add('Label')
+                    div.innerHTML = `
+                    <p>${newLabel}</p>
+                    <button class="removeBtn labelRemove" value="${newLabel}"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
+                    `
+                    let labelRemoveBtn = div.querySelector(".labelRemove")
+                    labelRemoveBtn.addEventListener("click", async (t) => {
                         //remove the label from the label state
-                        let i = currentLabel.indexOf(e)
-                        if (i != -1) {
-                            currentLabel.splice(i, 1)
-                        }
+                        currentLabel = currentLabel.filter((el) => {return el !== labelRemoveBtn.value})
                         //send the POST request to remove the label in the backend
                         let response = await fetch("api/changeFood", {
                             method: 'POST',
@@ -77,9 +107,37 @@ async function addFood() {
                         })
                         //on success remove the label from the food in the DOM
                         if (response.status == 200) {
-                            e.parentElement.remove()
+                            labelRemoveBtn.parentElement.remove()
                         }
                     })
+                    labelList.appendChild(div)
+                } else if (resp.status == 304) {
+                    listItem.querySelector(".addLabelInput").value = ''
+                }
+            })
+            listItem.querySelectorAll(".labelRemove").forEach( async (e) => {
+                e.addEventListener("click", async (t) => {
+                    //remove the label from the label state
+                    let i = currentLabel.indexOf(e)
+                    if (i != -1) {
+                        currentLabel.splice(i, 1)
+                    }
+                    //send the POST request to remove the label in the backend
+                    let response = await fetch("/api/changeFood", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ID: el.ID,
+                            Name: el.Name,
+                            Label: currentLabel
+                        })
+                    })
+                    //on success remove the label from the food in the DOM
+                    if (response.status == 200) {
+                        e.parentElement.remove()
+                    }
                 })
             })
             //make the listItem expandable
@@ -144,8 +202,12 @@ async function getAllFood() {
 
 //called on page load
 async function setup() {
+    allLabel = await fetch("/api/getLabel", {
+        method: 'GET'
+    }).then((r) => {
+        return r.json()
+    })
     let food = await getAllFood()
-    console.log(food)
     food.forEach((el) => { //we add each food to the DOM
         const listItem = document.createElement("div") //the div to hold the food 
             listItem.classList.add("listItem")
@@ -165,13 +227,16 @@ async function setup() {
             </button>
             <div class="listItemContent">
                 <div class="addLabelDiv">
-                    <h3>Add a Label</h3>
-                    <input class="addLabelInput" type="text">
+                    <div class="autocomplete">
+                        <input class="addLabelInput" type="text" name="myLabel" placeholder="Add a Label">
+                    </div>
+                    <button class="addLabelSubmit styledButton">Submit</button>
                 </div>
                 <div class="labelList"></div>
                 <button class="removeBtn foodRemove"><img src="static/assets/removeBtn.png" height="30" width="30"></button>
             </div>
             `
+            autocomplete(listItem.querySelector(".addLabelInput"), allLabel)
             let currentLabel = el.Label //holds the label state for the food
             let labelList = listItem.querySelector(".labelList")
             el.Label.forEach((e) => { //add each label to the food
@@ -181,6 +246,60 @@ async function setup() {
                     <button class="removeBtn labelRemove" value="${e}"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
                 </div>
                 `
+            })
+            listItem.querySelector(".addLabelSubmit").addEventListener("click", async (e) => {
+                let newLabel = listItem.querySelector(".addLabelInput").value
+                let arr = currentLabel
+                if (arr.includes(newLabel)) {
+                    listItem.querySelector(".addLabelInput").value = ''
+                    return
+                }
+                arr.push(newLabel)
+                let resp = await fetch("/api/changeFood", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ID: el.ID,
+                        Name: el.Name,
+                        Label: arr
+                    })
+                })
+                if (resp.status == 200) {
+                    currentLabel.push(newLabel)
+                    listItem.querySelector(".addLabelInput").value = ''
+                    let div = document.createElement('div')
+                    div.classList.add('Label')
+                    div.innerHTML = `
+                    <p>${newLabel}</p>
+                    <button class="removeBtn labelRemove" value="${newLabel}"><img src="static/assets/removeBtn.png" height="20" width="20"></button>
+                    `
+                    let labelRemoveBtn = div.querySelector(".labelRemove")
+                    labelRemoveBtn.addEventListener("click", async (t) => {
+                        //remove the label from the label state
+                        currentLabel = currentLabel.filter((el) => {return el !== labelRemoveBtn.value})
+                        //send the POST request to remove the label in the backend
+                        let response = await fetch("api/changeFood", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ID: el.ID,
+                                Name: el.Name,
+                                Label: currentLabel
+                            })
+                        })
+                        //on success remove the label from the food in the DOM
+                        if (response.status == 200) {
+                            labelRemoveBtn.parentElement.remove()
+                        }
+                    })
+                    labelList.appendChild(div)
+                } else if (resp.status == 304) {
+                    listItem.querySelector(".addLabelInput").value = ''
+                }
             })
             listItem.querySelectorAll(".labelRemove").forEach( async (ev) => {
                 ev.addEventListener("click", async (t) => {

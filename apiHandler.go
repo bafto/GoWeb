@@ -91,6 +91,16 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	changed, err := food.ValidateLabel()
+	if err != nil {
+		log.Println("Error validating food Label: " + err.Error())
+		errorJson(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if changed {
+		returnJsonFromStruct(w, food, http.StatusNotModified)
+		return
+	}
 	switch r.Method {
 	case http.MethodPost:
 		log.Println("request on /api/changeFood was of type POST")
