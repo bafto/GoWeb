@@ -23,7 +23,7 @@ func loadTemplates() {
 //serving the root page (every request on "/" that is not handled specifically)
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /")
-	loadTemplates()
+	//loadTemplates()
 	err := templates.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
@@ -34,7 +34,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 //serving the labelList page
 func labelListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /labelList")
-	loadTemplates()
+	//loadTemplates()
 	err := templates.ExecuteTemplate(w, "labelList.html", nil)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
