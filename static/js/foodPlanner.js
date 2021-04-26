@@ -15,7 +15,13 @@ async function generateFood() {
         },
         body: JSON.stringify(labelConstraints)
     }).then(async (r) => {return await r.json()})
-    console.log(resp)
+    let foodList = document.getElementById('foodList').querySelector('ul')
+    foodList.innerHTML = ''
+    resp.forEach((el) => {
+        let item = document.createElement('li')
+        item.innerHTML = el.Name
+        foodList.appendChild(item)
+    })
 }
 
 generateFoodButton.addEventListener("click", async (ev) => {

@@ -13,7 +13,7 @@ body>h1 {
 #labelGrid {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     margin-bottom: 1rem;
 }
 
