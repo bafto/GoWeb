@@ -1,0 +1,59 @@
+body>h1 {
+    text-align: center;
+}
+
+#content {
+    position: relative;
+    margin-bottom: 5rem;
+    width: 40%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+#labelGrid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 1rem;
+}
+
+#form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4%;
+}
+
+.styledButton {
+    height: 2em;
+    margin-top: 2%;
+    width: 35%;
+    border-radius: 10px;
+    border: none;
+    background-color: rgb(221, 221, 221);
+    transition: background-color 0.3s ease;
+}
+
+.styledButton:hover {
+    background-color: rgb(211, 211, 211);
+    transition: background-color 0.3s ease;
+}
+
+.styledButton:active {
+    outline: none;
+    background-color: rgb(191, 191, 191);
+}
+
+.styledButton:focus {
+    outline: none;
+}
+
+@media screen and (max-device-width: 480px) {
+    #form>button {
+        width: 65%;
+    }
+
+    #content {
+        width: 80%;
+    }
+}

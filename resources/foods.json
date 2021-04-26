@@ -1,4 +1,10 @@
 {
-	"LabelList": [],
+	"LabelList": [
+		"Vegetarisch",
+		"Vegan",
+		"Herzhaft",
+		"Lecker",
+		"Mit Speck"
+	],
 	"FoodList": []
 }

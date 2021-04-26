@@ -5,12 +5,19 @@
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link rel="stylesheet" href="static/css/foodPlanner.css">
         <link rel="stylesheet" href="static/css/nav.css">
+        <link rel="stylesheet" href="static/css/autocomplete.css">
+        <script src="static/js/autocomplete.js" type="text/javascript"></script>
         <script src="static/js/foodPlanner.js" type="text/javascript" defer></script>
     </head>
     <body>
         <h1>Food Planner</h1>
         <div id="content">
-            <h1>Hello World</h1>
+            <div id="form">
+                <h2 style="text-align: center;">Constraints:</h2>
+                <section id="labelGrid" class="labelGrid">
+                </section>
+                <button id="generateFood" class="styledButton">Generate Food</button>
+            </div>
         </div>
         <nav>
             <ul>
