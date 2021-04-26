@@ -6,5 +6,56 @@
 		"Lecker",
 		"Mit Speck"
 	],
-	"FoodList": []
+	"FoodList": [
+		{
+			"ID": "Mon-Apr-26-12:32:24-2021",
+			"Name": "Suppe",
+			"Label": [
+				"Vegetarisch",
+				"Vegan",
+				"Lecker"
+			]
+		},
+		{
+			"ID": "Mon-Apr-26-12:32:29-2021",
+			"Name": "Steak",
+			"Label": [
+				"Mit Speck",
+				"Herzhaft",
+				"Lecker"
+			]
+		},
+		{
+			"ID": "Mon-Apr-26-12:32:32-2021",
+			"Name": "Schweinebraten",
+			"Label": [
+				"Mit Speck",
+				"Herzhaft"
+			]
+		},
+		{
+			"ID": "Mon-Apr-26-12:32:34-2021",
+			"Name": "Tomaten",
+			"Label": [
+				"Vegetarisch",
+				"Vegan"
+			]
+		},
+		{
+			"ID": "Mon-Apr-26-12:32:36-2021",
+			"Name": "Kartoffeln",
+			"Label": [
+				"Vegetarisch",
+				"Vegan"
+			]
+		},
+		{
+			"ID": "Mon-Apr-26-12:32:39-2021",
+			"Name": "Erbsen",
+			"Label": [
+				"Vegetarisch",
+				"Vegan"
+			]
+		}
+	]
 }

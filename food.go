@@ -46,8 +46,14 @@ func (f Food) Equals(comp Food) bool { //compare foods by ID
 	return f.ID == comp.ID
 }
 
-func (f Food) HasLabel(label string) bool { //check if a food has a Label set to true
-	return ContainsString(f.Label, label)
+func (f Food) HasLabel(label []string) bool { //check if a food has a Label set to true
+	ret := true
+	for _, v := range label {
+		if !ContainsString(f.Label, v) {
+			ret = false
+		}
+	}
+	return ret
 }
 
 //removes all Labels that are not in the Label list, and returns true if at least one label was removed
@@ -121,6 +127,20 @@ func GetWholeFoodList() ([]Food, error) {
 	return holder.FoodList, err
 }
 
+func GetEveryFoodWithLabel(label []string) ([]Food, error) {
+	Foods, err := GetWholeFoodList()
+	if err != nil {
+		return nil, err
+	}
+	var retFoods []Food
+	for _, v := range Foods {
+		if v.HasLabel(label) {
+			retFoods = append(retFoods, v)
+		}
+	}
+	return retFoods, nil
+}
+
 //returns a []string containing the label list in foods.json
 func GetWholeLabelList() ([]string, error) {
 	holder, err := GetWholeFile()
@@ -190,7 +210,7 @@ func DeleteLabelFromList(data string) error {
 		}
 	}
 	for i := range holder.FoodList { //delete the label from every food in the list
-		if holder.FoodList[i].HasLabel(data) {
+		if holder.FoodList[i].HasLabel([]string{data}) {
 			var newLabel []string
 			for _, v := range holder.FoodList[i].Label {
 				if v != data {

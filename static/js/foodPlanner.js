@@ -8,13 +8,14 @@ async function generateFood() {
             labelConstraints.push(el.value)
         }
     })
-    console.log(JSON.stringify({
-        method: 'Get',
+    let resp = await fetch("/api/getFoodConstrained", {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: labelConstraints
-    }))
+        body: JSON.stringify(labelConstraints)
+    }).then(async (r) => {return await r.json()})
+    console.log(resp)
 }
 
 generateFoodButton.addEventListener("click", async (ev) => {

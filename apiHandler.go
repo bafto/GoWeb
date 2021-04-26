@@ -133,6 +133,29 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 	returnJsonFromStruct(w, Foods, http.StatusOK)
 }
 
+func GetFoodWithLabelHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /api/getFoodConstrained")
+	if r.Method != http.MethodPost {
+		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
+		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		return
+	}
+	label := make([]string, 0)
+	err := json.NewDecoder(r.Body).Decode(&label)
+	if err != nil {
+		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errorJson(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	Foods, err := GetEveryFoodWithLabel(label)
+	if err != nil {
+		log.Println("Error getting foods with label: " + err.Error())
+		errorJson(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	returnJsonFromStruct(w, Foods, http.StatusOK)
+}
+
 func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getLabel")
 	if r.Method != http.MethodGet {
