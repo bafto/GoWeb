@@ -17,13 +17,13 @@ var server http.Server           //the server itself which uses the handler serv
 var templates *template.Template //html templates for all files that need to be served
 
 func loadTemplates() {
-	templates = template.Must(template.ParseFiles("html/index.html", "html/labelList.html"))
+	templates = template.Must(template.ParseFiles("html/index.html", "html/labelList.html", "html/foodPlanner.html"))
 }
 
 //serving the root page (every request on "/" that is not handled specifically)
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /")
-	//loadTemplates()
+	loadTemplates()
 	err := templates.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
@@ -34,11 +34,21 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 //serving the labelList page
 func labelListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /labelList")
-	//loadTemplates()
+	loadTemplates()
 	err := templates.ExecuteTemplate(w, "labelList.html", nil)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		log.Println("Error executing the labelList template: " + err.Error())
+	}
+}
+
+func foodPlannerHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received a request on /foodPlanner")
+	loadTemplates()
+	err := templates.ExecuteTemplate(w, "foodPlanner.html", nil)
+	if err != nil {
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
+		log.Println("Error executing the foodPlanner template: " + err.Error())
 	}
 }
 
@@ -55,6 +65,7 @@ func main() {
 	//setup the html page handler functions
 	serverHandler.HandleFunc("/", indexHandler)
 	serverHandler.HandleFunc("/labelList", labelListHandler)
+	serverHandler.HandleFunc("/foodPlanner", foodPlannerHandler)
 	//setup the handler functions defined in apiHandler.go
 	serverHandler.HandleFunc("/api/editFood", EditFoodHandler)
 	serverHandler.HandleFunc("/api/getFood", GetFoodHandler)
