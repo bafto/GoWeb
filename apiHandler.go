@@ -3,8 +3,22 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
+
+var randSource rand.Source = rand.NewSource(time.Now().UnixNano())
+var random *rand.Rand = rand.New(randSource)
+
+func ContainsFood(sli []Food, comp Food) bool {
+	for _, v := range sli {
+		if v.Equals(comp) {
+			return true
+		}
+	}
+	return false
+}
 
 //write an json error to w
 func errorJson(w http.ResponseWriter, msg string, code int) {
@@ -140,20 +154,40 @@ func GetFoodWithLabelHandler(w http.ResponseWriter, r *http.Request) {
 		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
 	}
-	label := make([]string, 0)
-	err := json.NewDecoder(r.Body).Decode(&label)
+
+	type Data struct {
+		Label []string
+		Count int
+	}
+
+	var data Data
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
 		errorJson(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	Foods, err := GetEveryFoodWithLabel(label)
+	Foods, err := GetEveryFoodWithLabel(data.Label)
 	if err != nil {
 		log.Println("Error getting foods with label: " + err.Error())
 		errorJson(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	returnJsonFromStruct(w, Foods, http.StatusOK)
+	var retFoods []Food = make([]Food, 0)
+	if data.Count <= len(Foods) {
+		for i := 0; i < data.Count; i++ {
+			food := Foods[random.Intn(len(Foods))]
+			if !ContainsFood(retFoods, food) {
+				retFoods = append(retFoods, food)
+			} else {
+				i--
+				continue
+			}
+		}
+	} else {
+		retFoods = Foods
+	}
+	returnJsonFromStruct(w, retFoods, http.StatusOK)
 }
 
 func GetLabelHandler(w http.ResponseWriter, r *http.Request) {

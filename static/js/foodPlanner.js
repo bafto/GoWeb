@@ -13,15 +13,24 @@ async function generateFood() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(labelConstraints)
+        body: JSON.stringify({
+            "Label": labelConstraints,
+            "Count": 5
+        })
     }).then(async (r) => {return await r.json()})
     let foodList = document.getElementById('foodList').querySelector('ul')
     foodList.innerHTML = ''
-    resp.forEach((el) => {
+    if (resp !== null) {
+        resp.forEach(el => {
+            let item = document.createElement('li')
+            item.innerHTML = el.Name
+            foodList.appendChild(item)
+        })
+    } else {
         let item = document.createElement('li')
-        item.innerHTML = el.Name
+        item.innerHTML = "No Food with the specified restrictions found"
         foodList.appendChild(item)
-    })
+    }
 }
 
 generateFoodButton.addEventListener("click", async (ev) => {
