@@ -51,7 +51,7 @@ async function addFoodToDocument(Food) {
         }
         arr.push(newLabel)
         let resp = await fetch("/api/changeFood", {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -75,8 +75,8 @@ async function addFoodToDocument(Food) {
                 //remove the label from the label state
                 currentLabel = currentLabel.filter((el) => {return el !== labelRemoveBtn.value})
                 //send the POST request to remove the label in the backend
-                let response = await fetch("api/changeFood", {
-                    method: 'POST',
+                let response = await fetch("/api/changeFood", {
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -101,8 +101,8 @@ async function addFoodToDocument(Food) {
             //remove the label from the label state
             currentLabel = currentLabel.filter((el) => {return el !== ev.value})
             //send the POST request to remove the label in the backend
-            let response = await fetch("api/changeFood", {
-                method: 'POST',
+            let response = await fetch("/api/changeFood", {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },

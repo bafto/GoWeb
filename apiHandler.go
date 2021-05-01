@@ -116,8 +116,8 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch r.Method {
-	case http.MethodPost:
-		log.Println("request on /api/changeFood was of type POST")
+	case http.MethodPatch:
+		log.Println("request on /api/changeFood was of type PATCH")
 		err = ChangeFoodInList(food)
 		if err != nil {
 			log.Println("Error changing food list: " + err.Error())
