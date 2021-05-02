@@ -18,6 +18,7 @@ async function generateFood() {
         },
         body: JSON.stringify({
             "Label": labelConstraints,
+            "Names": [],
             "Count": foodCount
         })
     }).then(async (r) => {return await r.json()})
@@ -33,6 +34,10 @@ async function generateFood() {
                 <button class="rerollBtn"><img src="static/assets/rerollBtn.png" height="30" width="30"></button>
                 `
             listItem.querySelector('.rerollBtn').addEventListener("click", async (el) => {
+                let nameConstrains = []
+                foodList.querySelectorAll('p').forEach(el => {
+                    nameConstrains.push(el.innerText)
+                })
                 let resp = await fetch("/api/getFoodConstrained", {
                     method: 'POST',
                     headers: {
@@ -40,6 +45,7 @@ async function generateFood() {
                     },
                     body: JSON.stringify({
                         "Label": labelConstraints,
+                        "Names": nameConstrains,
                         "Count": 1
                     })
                 }).then(async (r) => {return await r.json()})

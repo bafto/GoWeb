@@ -147,7 +147,7 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 	returnJsonFromStruct(w, Foods, http.StatusOK)
 }
 
-func GetFoodWithLabelHandler(w http.ResponseWriter, r *http.Request) {
+func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getFoodConstrained")
 	if r.Method != http.MethodPost {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
@@ -157,6 +157,7 @@ func GetFoodWithLabelHandler(w http.ResponseWriter, r *http.Request) {
 
 	type Data struct {
 		Label []string
+		Names []string
 		Count int
 	}
 
@@ -177,7 +178,7 @@ func GetFoodWithLabelHandler(w http.ResponseWriter, r *http.Request) {
 	if data.Count <= len(Foods) {
 		for i := 0; i < data.Count; i++ {
 			food := Foods[random.Intn(len(Foods))]
-			if !ContainsFood(retFoods, food) {
+			if !ContainsFood(retFoods, food) && !ContainsString(data.Names, food.Name) {
 				retFoods = append(retFoods, food)
 			} else {
 				i--

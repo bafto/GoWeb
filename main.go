@@ -72,7 +72,7 @@ func main() {
 	serverHandler.HandleFunc("/api/changeFood", ChangeFoodHandler)
 	serverHandler.HandleFunc("/api/getLabel", GetLabelHandler)
 	serverHandler.HandleFunc("/api/editLabel", EditLabelHandler)
-	serverHandler.HandleFunc("/api/getFoodConstrained", GetFoodWithLabelHandler)
+	serverHandler.HandleFunc("/api/getFoodConstrained", GetFoodConstrainedHandler)
 
 	//start the goroutine that handles some commands mainly for debugging but also to shutdown the server
 	log.Println("Starting cmd goroutine")
