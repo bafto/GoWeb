@@ -24,6 +24,30 @@ body>h1 {
     margin-top: 4%;
 }
 
+#foods {
+    list-style-type: none;
+}
+
+.listItem {
+    max-height: 300px;
+    display: grid;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    background-color: rgb(230, 230, 230);
+    border: none;
+    border-radius: 5px;
+    grid-template-columns: 1fr auto;
+    transition: background-color 0.5s ease;
+    margin-bottom: 4%;
+    margin-top: 4%;
+    align-items: center;
+}
+
+.listItem:hover {
+    background-color: rgb(201, 201, 201);
+    transition: background-color 0.5s ease;
+}
+
 .styledButton {
     height: 2em;
     margin-top: 2%;
@@ -32,6 +56,21 @@ body>h1 {
     border: none;
     background-color: rgb(221, 221, 221);
     transition: background-color 0.3s ease;
+}
+
+.rerollBtn {
+    border-color: transparent;
+    background-color: transparent;
+    border-radius: 5px;
+}
+
+.rerollBtn:hover {
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+.rerollBtn:focus {
+    outline: none;
 }
 
 .styledButton:hover {
@@ -45,6 +84,28 @@ body>h1 {
 }
 
 .styledButton:focus {
+    outline: none;
+}
+
+input {
+    font-size: 20;
+    height: 1.5em;
+    width: 50%;
+    border-radius: 10px;
+    outline: none;
+    border-color: transparent;
+    background-color: rgb(221, 221, 221);
+    transition: background-color 0.4s ease;
+}
+
+input:hover {
+    background-color: rgb(211, 211, 211);
+    transition: background-color 0.4s ease;
+}
+
+input:focus {
+    background-color: rgb(191, 191, 191);
+    border-color: transparent;
     outline: none;
 }
 

@@ -8,6 +8,9 @@ async function generateFood() {
             labelConstraints.push(el.value)
         }
     })
+    let foodCount = document.getElementById("foodCount").value
+    foodCount = foodCount > 7 ? 7 : parseInt(foodCount)
+    foodCount = foodCount < 1 ? 1 : parseInt(foodCount)
     let resp = await fetch("/api/getFoodConstrained", {
         method: 'POST',
         headers: {
@@ -15,7 +18,7 @@ async function generateFood() {
         },
         body: JSON.stringify({
             "Label": labelConstraints,
-            "Count": 5
+            "Count": foodCount
         })
     }).then(async (r) => {return await r.json()})
     let foodList = document.getElementById('foodList').querySelector('ul')
@@ -23,7 +26,26 @@ async function generateFood() {
     if (resp !== null) {
         resp.forEach(el => {
             let item = document.createElement('li')
-            item.innerHTML = el.Name
+            let listItem = document.createElement('div')
+            listItem.classList.add('listItem')
+            listItem.innerHTML = `
+                <p>${el.Name}</p>
+                <button class="rerollBtn"><img src="static/assets/rerollBtn.png" height="30" width="30"></button>
+                `
+            listItem.querySelector('.rerollBtn').addEventListener("click", async (el) => {
+                let resp = await fetch("/api/getFoodConstrained", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "Label": labelConstraints,
+                        "Count": 1
+                    })
+                }).then(async (r) => {return await r.json()})
+                let p = listItem.querySelector('p').innerText = resp[0].Name
+            })
+            item.appendChild(listItem)
             foodList.appendChild(item)
         })
     } else {
