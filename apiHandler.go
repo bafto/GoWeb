@@ -40,6 +40,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&food)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errLog.Println("Error unmarshaling requests json body: " + err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -52,11 +53,13 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if err != nil {
 			log.Println("Error retreiving label list: " + err.Error())
+			errLog.Println("Error retreiving label list: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		err = AddFoodToList(food) //and add the food to the list
 		if err != nil {
 			log.Println("Error editing Food List: " + err.Error())
+			errLog.Println("Error editing Food List: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -66,6 +69,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		err = DeleteFoodFromList(food)
 		if err != nil {
 			log.Println("Error deleting from Food List: " + err.Error())
+			errLog.Println("Error deleting from Food List: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -88,12 +92,14 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&food) //retreive the food
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errLog.Println("Error unmarshaling requests json body: " + err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	changed, err := food.ValidateLabel()
 	if err != nil {
 		log.Println("Error validating food Label: " + err.Error())
+		errLog.Println("Error validating food Label: " + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -107,6 +113,7 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 		err = ChangeFoodInList(food)
 		if err != nil {
 			log.Println("Error changing food list: " + err.Error())
+			errLog.Println("Error changing food list: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -122,12 +129,13 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getFood")
 	if r.Method != http.MethodGet {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
-		http.Error(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		http.Error(w, "Method should have been GET", http.StatusMethodNotAllowed)
 		return
 	}
 	Foods, err := GetWholeFoodList()
 	if err != nil {
 		log.Println("Error retreiving whole food list: " + err.Error())
+		errLog.Println("Error retreiving whole food list: " + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	returnJsonFromStruct(w, Foods, http.StatusOK)
@@ -137,7 +145,7 @@ func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getFoodConstrained")
 	if r.Method != http.MethodPost {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
-		http.Error(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		http.Error(w, "Method should have been POST", http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -151,12 +159,14 @@ func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errLog.Println("Error unmarshaling requests json body: " + err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	Foods, err := GetEveryFoodWithLabel(data.Label)
 	if err != nil {
 		log.Println("Error getting foods with label: " + err.Error())
+		errLog.Println("Error getting foods with label: " + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -181,12 +191,13 @@ func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getLabel")
 	if r.Method != http.MethodGet {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
-		http.Error(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		http.Error(w, "Method should have been GET", http.StatusMethodNotAllowed)
 		return
 	}
 	label, err := GetWholeLabelList()
 	if err != nil {
 		log.Println("error receiving label list: " + err.Error())
+		errLog.Println("error receiving label list: " + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	returnJsonFromStruct(w, label, http.StatusOK)
@@ -204,6 +215,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&label)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
+		errLog.Println("Error unmarshaling requests json body: " + err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -213,6 +225,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		err = AddLabelToList(label)
 		if err != nil {
 			log.Println("Error adding label to list: " + err.Error())
+			errLog.Println("Error adding label to list: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		w.Write([]byte(label))
@@ -221,6 +234,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		err = DeleteLabelFromList(label)
 		if err != nil {
 			log.Println("Error deleting from labelList: " + err.Error())
+			errLog.Println("Error deleting from labelList: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

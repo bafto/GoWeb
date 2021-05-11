@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -15,6 +16,8 @@ var serverHandler *http.ServeMux //the handler that handles requests
 var server http.Server           //the server itself which uses the handler serverHandler
 
 var templates *template.Template //html templates for all files that need to be served
+
+var errLog *log.Logger
 
 func loadTemplates() {
 	templates = template.Must(template.ParseFiles("html/index.html", "html/labelList.html", "html/foodPlanner.html"))
@@ -28,6 +31,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		log.Println("Error executing the index template: " + err.Error())
+		errLog.Println("Error executing the index template: " + err.Error())
 	}
 }
 
@@ -39,6 +43,7 @@ func labelListHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		log.Println("Error executing the labelList template: " + err.Error())
+		errLog.Println("Error executing the labelList template: " + err.Error())
 	}
 }
 
@@ -49,10 +54,21 @@ func foodPlannerHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		log.Println("Error executing the foodPlanner template: " + err.Error())
+		errLog.Println("Error executing the foodPlanner template: " + err.Error())
 	}
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	logFile, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer logFile.Close()
+	errLog = log.New(logFile, "", log.Ldate|log.Ltime|log.Lshortfile)
+	errLog.Println("Setupt log for this session")
+
 	//load the templates (in production only here)
 	loadTemplates()
 
@@ -86,6 +102,7 @@ func main() {
 	//startup the server to listen for requests
 	fmt.Println("server starting on http://localhost:8080")
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		errLog.Println(err.Error())
 		log.Fatal(err.Error())
 	} else if err == http.ErrServerClosed {
 		log.Println("Server not listening anymore")
@@ -102,12 +119,14 @@ func cmdInterface() {
 		_, err := fmt.Scanln(&inp)
 		if err != nil {
 			log.Println(err.Error())
+			errLog.Println(err.Error())
 		} else {
 			switch inp {
 			case "quit":
 				log.Println("Attempting to shutdown server")
 				err := server.Shutdown(context.Background())
 				if err != nil {
+					errLog.Println("Error while trying to shutdown server: " + err.Error())
 					log.Fatal("Error while trying to shutdown server: " + err.Error())
 				}
 				log.Println("Server was shutdown")
