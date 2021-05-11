@@ -20,13 +20,6 @@ func ContainsFood(sli []Food, comp Food) bool {
 	return false
 }
 
-//write an json error to w
-func errorJson(w http.ResponseWriter, msg string, code int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(`{"error":"` + msg + `"}`)
-}
-
 //send a response with json body over w
 func returnJson(w http.ResponseWriter, JSON string, code int) {
 	w.Header().Set("Content-Type", "application/json")
@@ -46,7 +39,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/editFood")
 	if r.Header.Get("Content-Type") != "application/json" { //validate that the request contains json
 		log.Println("Request does not contain json")
-		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
+		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
 	//get the food from the request body
@@ -54,7 +47,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&food)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
-		errorJson(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	switch r.Method {
@@ -66,12 +59,12 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if err != nil {
 			log.Println("Error retreiving label list: " + err.Error())
-			errorJson(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		err = AddFoodToList(food) //and add the food to the list
 		if err != nil {
 			log.Println("Error editing Food List: " + err.Error())
-			errorJson(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		returnJsonFromStruct(w, food, http.StatusOK)
@@ -80,13 +73,13 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		err = DeleteFoodFromList(food)
 		if err != nil {
 			log.Println("Error deleting from Food List: " + err.Error())
-			errorJson(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		returnJson(w, `{"success":true}`, http.StatusOK)
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
-		errorJson(w, "false Method type", http.StatusBadRequest)
+		http.Error(w, "false Method type", http.StatusBadRequest)
 	}
 }
 
@@ -95,20 +88,20 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/changeFood")
 	if r.Header.Get("Content-Type") != "application/json" { //check if the request contains json
 		log.Println("Request does not contain json")
-		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
+		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
 	var food Food
 	err := json.NewDecoder(r.Body).Decode(&food) //retreive the food
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
-		errorJson(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	changed, err := food.ValidateLabel()
 	if err != nil {
 		log.Println("Error validating food Label: " + err.Error())
-		errorJson(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	if changed {
@@ -121,13 +114,13 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 		err = ChangeFoodInList(food)
 		if err != nil {
 			log.Println("Error changing food list: " + err.Error())
-			errorJson(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		returnJsonFromStruct(w, food, http.StatusOK)
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
-		errorJson(w, "false Method type", http.StatusBadRequest)
+		http.Error(w, "false Method type", http.StatusBadRequest)
 	}
 }
 
@@ -136,13 +129,13 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getFood")
 	if r.Method != http.MethodGet {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
-		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		http.Error(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
 	}
 	Foods, err := GetWholeFoodList()
 	if err != nil {
 		log.Println("Error retreiving whole food list: " + err.Error())
-		errorJson(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	returnJsonFromStruct(w, Foods, http.StatusOK)
 }
@@ -151,7 +144,7 @@ func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getFoodConstrained")
 	if r.Method != http.MethodPost {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
-		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		http.Error(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -165,13 +158,13 @@ func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
-		errorJson(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	Foods, err := GetEveryFoodWithLabel(data.Label)
 	if err != nil {
 		log.Println("Error getting foods with label: " + err.Error())
-		errorJson(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	var retFoods []Food = make([]Food, 0)
@@ -195,13 +188,13 @@ func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/getLabel")
 	if r.Method != http.MethodGet {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
-		errorJson(w, `{"success":false}`, http.StatusMethodNotAllowed)
+		http.Error(w, `{"success":false}`, http.StatusMethodNotAllowed)
 		return
 	}
 	label, err := GetWholeLabelList()
 	if err != nil {
 		log.Println("error receiving label list: " + err.Error())
-		errorJson(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	returnJsonFromStruct(w, label, http.StatusOK)
 }
@@ -210,7 +203,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /api/editLabel")
 	if r.Header.Get("Content-Type") != "application/json" { //validate that the request contains json
 		log.Println("Request does not contain json")
-		errorJson(w, "Request Header is not application/json", http.StatusBadRequest)
+		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
 	//get the food from the request body
@@ -218,7 +211,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&label)
 	if err != nil {
 		log.Println("Error unmarshaling requests json body: " + err.Error())
-		errorJson(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	switch r.Method {
@@ -227,7 +220,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		err = AddLabelToList(label)
 		if err != nil {
 			log.Println("Error adding label to list: " + err.Error())
-			errorJson(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		returnJson(w, label, http.StatusOK)
 	case http.MethodDelete: //delete food from the list
@@ -235,12 +228,12 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		err = DeleteLabelFromList(label)
 		if err != nil {
 			log.Println("Error deleting from labelList: " + err.Error())
-			errorJson(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		returnJson(w, label, http.StatusOK)
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
-		errorJson(w, "false Method type", http.StatusBadRequest)
+		http.Error(w, "false Method type", http.StatusBadRequest)
 	}
 }
