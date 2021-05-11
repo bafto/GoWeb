@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -58,6 +59,24 @@ func foodPlannerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func setupFoodFile() {
+	if _, err := os.Stat("/resources/foods.json"); err == nil {
+		_, err = GetWholeFile()
+		if err != nil {
+			log.Fatal("foods.json is in a bad state, check the json format: " + err.Error())
+		}
+	} else if os.IsNotExist(err) {
+		os.Create("resources/foods.json")
+		ioutil.WriteFile("resources/foods.json", []byte(`{"LabelList":[],"IngredientList":[],"FoodLIst":[]}`), 0644)
+		_, err = GetWholeFile()
+		if err != nil {
+			log.Fatal("foods.json is in a bad state even after creating: " + err.Error())
+		}
+	} else {
+		log.Fatal("foods.json is in an unknown state: " + err.Error())
+	}
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
@@ -71,6 +90,8 @@ func main() {
 
 	//load the templates (in production only here)
 	loadTemplates()
+
+	setupFoodFile()
 
 	//create the handler and server
 	serverHandler = http.NewServeMux()

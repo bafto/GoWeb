@@ -3,24 +3,8 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
-	"os"
 	"time"
 )
-
-//check if a file exists (mainly used for food.json)
-func CheckFileExist(file string) (*bool, error) {
-	var b bool
-	if _, err := os.Stat(file); err == nil {
-		b = true
-		return &b, nil
-	} else if os.IsNotExist(err) {
-		b = false
-		return &b, nil
-	} else {
-		return nil, err
-	}
-}
 
 //helper to check if a []string contains a certain value
 func ContainsString(s []string, val string) bool {
@@ -104,13 +88,6 @@ func writeFoodList(foods []Food) error {
 }
 
 func GetWholeFile() (JsonHolder, error) {
-	//if foods.json does not exist create it with an empty food and label list
-	if b, err := CheckFileExist("resources/foods.json"); err != nil {
-		log.Println("File resources/foods.json may or may not exist: " + err.Error())
-	} else if !*b {
-		os.Create("resources/foods.json")
-		ioutil.WriteFile("resources/foods.json", []byte(`{"LabelList":[],"IngredientList":[],"FoodLIst":[]}`), 0644)
-	}
 	file, err := ioutil.ReadFile("resources/foods.json") //read foods.json
 	if err != nil {
 		return JsonHolder{}, err
