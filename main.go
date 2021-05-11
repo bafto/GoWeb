@@ -48,6 +48,7 @@ func labelListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//serving the foodPlanner page
 func foodPlannerHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("received a request on /foodPlanner")
 	loadTemplates()
@@ -59,13 +60,15 @@ func foodPlannerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//validating foods.json and creating it if necessary
 func setupFoodFile() {
-	if _, err := os.Stat("/resources/foods.json"); err == nil {
+	if _, err := os.Stat("resources/foods.json"); err == nil {
 		_, err = GetWholeFile()
 		if err != nil {
 			log.Fatal("foods.json is in a bad state, check the json format: " + err.Error())
 		}
 	} else if os.IsNotExist(err) {
+		log.Println(err)
 		os.Create("resources/foods.json")
 		ioutil.WriteFile("resources/foods.json", []byte(`{"LabelList":[],"IngredientList":[],"FoodLIst":[]}`), 0644)
 		_, err = GetWholeFile()
