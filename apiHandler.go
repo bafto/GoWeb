@@ -20,13 +20,6 @@ func ContainsFood(sli []Food, comp Food) bool {
 	return false
 }
 
-//send a response with json body over w
-func returnJson(w http.ResponseWriter, JSON string, code int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(JSON)
-}
-
 //send a response with a json body constructed from data over w
 func returnJsonFromStruct(w http.ResponseWriter, data interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json")
@@ -76,7 +69,7 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		returnJson(w, `{"success":true}`, http.StatusOK)
+		w.Write([]byte("success"))
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
 		http.Error(w, "false Method type", http.StatusBadRequest)
@@ -206,7 +199,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
 		return
 	}
-	//get the food from the request body
+	//get the label from the request body
 	var label string
 	err := json.NewDecoder(r.Body).Decode(&label)
 	if err != nil {
@@ -215,15 +208,15 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch r.Method {
-	case http.MethodPost: //add food to the list
+	case http.MethodPost: //add label to the list
 		log.Println("request on /api/editLabel was of type POST")
 		err = AddLabelToList(label)
 		if err != nil {
 			log.Println("Error adding label to list: " + err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		returnJson(w, label, http.StatusOK)
-	case http.MethodDelete: //delete food from the list
+		w.Write([]byte(label))
+	case http.MethodDelete: //delete label from the list
 		log.Println("request on /api/editLabel was of type DELETE")
 		err = DeleteLabelFromList(label)
 		if err != nil {
@@ -231,7 +224,7 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		returnJson(w, label, http.StatusOK)
+		w.Write([]byte(label))
 	default:
 		log.Println("Method type \"" + r.Method + "\" not handled")
 		http.Error(w, "false Method type", http.StatusBadRequest)
