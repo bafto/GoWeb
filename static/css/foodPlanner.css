@@ -13,8 +13,13 @@ body>h1 {
 #labelGrid {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
+    grid-auto-columns: min-content;
     margin-bottom: 1rem;
+}
+
+.grid-item {
+    text-align: center;
 }
 
 #form {

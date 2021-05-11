@@ -78,9 +78,13 @@ async function setup() {
         newLabelInput.type = 'checkbox'
         newLabelInput.value = el
         newLabelInput.checked = false
+        let span = document.createElement('span')
+        span.innerHTML = el
         let inpLabel = document.createElement('label')
+        inpLabel.classList.add('grid-item')
         inpLabel.appendChild(newLabelInput)
-        inpLabel.innerHTML += el
+        inpLabel.appendChild(document.createElement('br'))
+        inpLabel.appendChild(span)
         labelGrid.appendChild(inpLabel)
     })
 }
