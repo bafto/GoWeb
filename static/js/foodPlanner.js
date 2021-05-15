@@ -38,6 +38,12 @@ async function generateFood() {
                 foodList.querySelectorAll('p').forEach(el => {
                     nameConstrains.push(el.innerText)
                 })
+                let labelConstraints = []
+                document.querySelectorAll('.labelInput').forEach((el) => {
+                    if (el.checked) {
+                        labelConstraints.push(el.value)
+                    }
+                })
                 let resp = await fetch("/api/getFoodConstrained", {
                     method: 'POST',
                     headers: {
