@@ -29,7 +29,6 @@ func returnJsonFromStruct(w http.ResponseWriter, data interface{}, code int) {
 
 //handles POST and DELETE methods on /api/editFoods to work on the foods.json file
 func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/editFood")
 	if r.Header.Get("Content-Type") != "application/json" { //validate that the request contains json
 		log.Println("Request does not contain json")
 		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
@@ -46,7 +45,6 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost: //add food to the list
-		log.Println("request on /api/editFood was of type POST")
 		food.ID = GenerateFoodID() //generate the food ID
 		if food.Label == nil {
 			food.Label = make([]string, 0)
@@ -65,7 +63,6 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		returnJsonFromStruct(w, food, http.StatusOK)
 	case http.MethodDelete: //delete food from the list
-		log.Println("request on /api/editFood was of type DELETE")
 		err = DeleteFoodFromList(food)
 		if err != nil {
 			log.Println("Error deleting from Food List: " + err.Error())
@@ -82,7 +79,6 @@ func EditFoodHandler(w http.ResponseWriter, r *http.Request) {
 
 //handles POST requests on /api/changeFood to save changes on a single food like adding Labels
 func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/changeFood")
 	if r.Header.Get("Content-Type") != "application/json" { //check if the request contains json
 		log.Println("Request does not contain json")
 		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
@@ -109,7 +105,6 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPatch:
-		log.Println("request on /api/changeFood was of type PATCH")
 		err = ChangeFoodInList(food)
 		if err != nil {
 			log.Println("Error changing food list: " + err.Error())
@@ -126,7 +121,6 @@ func ChangeFoodHandler(w http.ResponseWriter, r *http.Request) {
 
 //responds with a json array containing foods.json
 func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/getFood")
 	if r.Method != http.MethodGet {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
 		http.Error(w, "Method should have been GET", http.StatusMethodNotAllowed)
@@ -142,7 +136,6 @@ func GetFoodHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/getFoodConstrained")
 	if r.Method != http.MethodPost {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been POST")
 		http.Error(w, "Method should have been POST", http.StatusMethodNotAllowed)
@@ -188,7 +181,6 @@ func GetFoodConstrainedHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/getLabel")
 	if r.Method != http.MethodGet {
 		log.Println("received request on /api/getFood of type " + r.Method + " that should've been GET")
 		http.Error(w, "Method should have been GET", http.StatusMethodNotAllowed)
@@ -204,7 +196,6 @@ func GetLabelHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /api/editLabel")
 	if r.Header.Get("Content-Type") != "application/json" { //validate that the request contains json
 		log.Println("Request does not contain json")
 		http.Error(w, "Request Header is not application/json", http.StatusBadRequest)
@@ -221,7 +212,6 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost: //add label to the list
-		log.Println("request on /api/editLabel was of type POST")
 		err = AddLabelToList(label)
 		if err != nil {
 			log.Println("Error adding label to list: " + err.Error())
@@ -230,7 +220,6 @@ func EditLabelHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write([]byte(label))
 	case http.MethodDelete: //delete label from the list
-		log.Println("request on /api/editLabel was of type DELETE")
 		err = DeleteLabelFromList(label)
 		if err != nil {
 			log.Println("Error deleting from labelList: " + err.Error())

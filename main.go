@@ -26,7 +26,6 @@ func loadTemplates() {
 
 //serving the root page (every request on "/" that is not handled specifically)
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /")
 	loadTemplates()
 	err := templates.ExecuteTemplate(w, "index.html", nil)
 	if err != nil {
@@ -38,7 +37,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 //serving the labelList page
 func labelListHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /labelList")
 	loadTemplates()
 	err := templates.ExecuteTemplate(w, "labelList.html", nil)
 	if err != nil {
@@ -50,7 +48,6 @@ func labelListHandler(w http.ResponseWriter, r *http.Request) {
 
 //serving the foodPlanner page
 func foodPlannerHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("received a request on /foodPlanner")
 	loadTemplates()
 	err := templates.ExecuteTemplate(w, "foodPlanner.html", nil)
 	if err != nil {
