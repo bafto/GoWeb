@@ -69,6 +69,10 @@ func setupFoodFile() {
 		}
 	} else if os.IsNotExist(err) {
 		log.Println(err)
+		err = os.Mkdir("resources", 0755)
+		if err != nil {
+			log.Fatal("failed to create the resources directory")
+		}
 		os.Create("resources/foods.json")
 		ioutil.WriteFile("resources/foods.json", []byte(`{"LabelList":[],"IngredientList":[],"FoodLIst":[]}`), 0644)
 		_, err = GetWholeFile()
